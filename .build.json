@@ -31,16 +31,16 @@
       "minify": true,
       "platform": "browser",
       "format": "esm",
-    "banner": { "js": "/*\n  whitebox\n  homepage: <https://github.com/vladmandic/whitebox>\n  author: <https://github.com/vladmandic>'\n*/\n" }
+    "banner": { "js": "/*\n  anime\n  homepage: <https://github.com/vladmandic/anime>\n  author: <https://github.com/vladmandic>'\n*/\n" }
     },
     "development": {
       "minify": true
     },
     "targets": [
       {
-        "name": "whitebox",
-        "input": "src/whitebox.ts",
-        "output": "public/whitebox.js"
+        "name": "anime",
+        "input": "src/anime.ts",
+        "output": "public/anime.js"
       }
     ]
   },

@@ -1,27 +1,27 @@
 {
-  "name": "@vladmandic/whitebox",
+  "name": "@vladmandic/anime",
   "version": "0.1.0",
-  "description": "Whitebox Cartoonize",
+  "description": "anime cartoonize",
   "sideEffects": false,
-  "main": "public/whitebox.js",
+  "main": "public/anime.js",
   "author": "Vladimir Mandic <mandic00@live.com>",
   "bugs": {
-    "url": "https://github.com/vladmandic/whitebox/issues"
+    "url": "https://github.com/vladmandic/anime/issues"
   },
-  "homepage": "https://vladmandic.github.io/whitebox/index.html",
+  "homepage": "https://vladmandic.github.io/anime/index.html",
   "license": "MIT",
   "engines": {
     "node": ">=14.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vladmandic/whitebox.git"
+    "url": "git+https://github.com/vladmandic/anime.git"
   },
   "scripts": {
     "dev": "build --profile development"
   },
   "keywords": [
-    "whitebox",
+    "anime",
     "cartoonize",
     "tfjs"
   ],

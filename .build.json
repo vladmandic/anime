@@ -28,9 +28,7 @@
       "sourcemap": true,
       "treeShaking": true,
       "ignoreAnnotations": true,
-      "minify": true,
-      "platform": "browser",
-      "format": "esm",
+      "minify": false,
     "banner": { "js": "/*\n  anime\n  homepage: <https://github.com/vladmandic/anime>\n  author: <https://github.com/vladmandic>'\n*/\n" }
     },
     "development": {
@@ -38,9 +36,26 @@
     },
     "targets": [
       {
-        "name": "anime",
-        "input": "src/anime.ts",
-        "output": "public/anime.js"
+        "name": "client-self",
+        "format": "esm",
+        "platform": "browser",
+        "input": "src/anime-clientside.ts",
+        "output": "public/anime-clientside.js"
+      },
+      {
+        "name": "client-node",
+        "format": "esm",
+        "platform": "browser",
+        "input": "src/anime-serverside.ts",
+        "output": "public/anime-serverside.js"
+      },
+      {
+        "name": "node",
+        "format": "cjs",
+        "platform": "node",
+        "input": "src/node.ts",
+        "output": "public/node.js",
+        "external": ["@tensorflow", "sharp"]
       }
     ]
   },

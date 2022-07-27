@@ -1,4 +1,5 @@
 import * as tf from '@vladmandic/tfjs/dist/tfjs.esm';
+// import { drawTexture, loadTexture, initScene } from './webgl';
 import { log } from './log';
 
 const modelUrl = '../model/whitebox.json';
@@ -69,6 +70,12 @@ async function runInference(frame = 0) {
     ctx.putImageData(imageData, 0, 0);
     const t5 = performance.now();
 
+    /*
+    t.data = t.clip.dataToGPU({ customTexShape: [720, 720] });
+    await drawTexture(t.data.texture);
+    const t5 = performance.now();
+    */
+
     // await tf.browser.toPixels(t.clip as tf.Tensor3D, canvas);
     for (const tensor of Object.keys(t)) tf.dispose(t[tensor]);
 
@@ -103,6 +110,9 @@ async function main() {
   canvas = document.getElementById('canvas') as HTMLCanvasElement;
   log('model', model);
   await startWebCam();
+  // await initScene(canvas);
+  // const texture = await loadTexture('../assets/out.jpg');
+  // await drawTexture(texture);
   runInference();
 }
 

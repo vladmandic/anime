@@ -1,7 +1,5 @@
 /* eslint-disable max-classes-per-file */
 
-let gl: WebGL2RenderingContext;
-
 const vertexShaderSrc = `#version 300 es
   precision mediump float;
   in vec4 position;
@@ -23,7 +21,7 @@ void main() {
   out_color = vec4(color.rgba);
 }`;
 
-const glError = (label: string): boolean => {
+const glError = (gl: WebGL2RenderingContext, label: string): boolean => {
   const err = gl.getError();
   if (err !== gl.NO_ERROR) throw new Error(`glError: ${label} ${err}`);
   return err !== gl.NO_ERROR;
@@ -33,28 +31,31 @@ class GLTexture { // wrapper class for WebGL texture and its utility functions.
   texture: WebGLTexture;
   width: number;
   height: number;
+  gl: WebGL2RenderingContext;
 
-  constructor(texture: WebGLTexture, width: number, height: number) {
+  constructor(gl: WebGL2RenderingContext, texture: WebGLTexture, width: number, height: number) {
+    this.gl = gl;
     this.texture = texture;
     this.width = width;
     this.height = height;
   }
 
   bindTexture() {
-    gl.bindTexture(gl.TEXTURE_2D, this.texture);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
   }
 }
 
 class GLFrameBuffer extends GLTexture { // Wrapper class for WebGL texture and its associted framebuffer and utility functions
   framebuffer: WebGLFramebuffer;
 
-  constructor(width: number, height: number) {
+  constructor(gl: WebGL2RenderingContext, width: number, height: number) {
     const texture = gl.createTexture();
     if (!texture) throw new Error('createTexture: framebuffer');
-    super(texture, width, height);
+    super(gl, texture, width, height);
+    this.gl = gl;
     this.framebuffer = gl.createFramebuffer() as WebGLFramebuffer;
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
-    glError('bindFramebuffer');
+    glError(gl, 'bindFramebuffer');
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -63,7 +64,7 @@ class GLFrameBuffer extends GLTexture { // Wrapper class for WebGL texture and i
     gl.pixelStorei(gl.PACK_ALIGNMENT, 1);
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    glError('createTexture');
+    glError(gl, 'createTexture');
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
     const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
     if (status !== gl.FRAMEBUFFER_COMPLETE) throw new Error(`checkFramebufferStatus: ${status}`);
@@ -72,12 +73,12 @@ class GLFrameBuffer extends GLTexture { // Wrapper class for WebGL texture and i
   }
 
   bindFramebuffer(): void {
-    gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
-    gl.viewport(0, 0, this.width, this.height);
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);
+    this.gl.viewport(0, 0, this.width, this.height);
   }
 }
 
-const compileShader = (type: number, src: string): WebGLShader => {
+const compileShader = (gl: WebGL2RenderingContext, type: number, src: string): WebGLShader => {
   const shader = gl.createShader(type);
   if (!shader) throw new Error(`compileShader: ${type}`);
   gl.shaderSource(shader, src);
@@ -90,12 +91,14 @@ const compileShader = (type: number, src: string): WebGLShader => {
 class GLProgram { // Wrapper class for WebGL program and its utility functions
   program: WebGLProgram;
   cachedUniformLocations;
+  gl: WebGL2RenderingContext;
 
-  constructor(vertexSrc: string, fragmentSrc: string) {
-    const vertexShader = compileShader(gl.VERTEX_SHADER, vertexSrc);
-    glError('compileShader: vertex');
-    const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentSrc);
-    glError('compileShader: fragment');
+  constructor(gl: WebGL2RenderingContext, vertexSrc: string, fragmentSrc: string) {
+    this.gl = gl;
+    const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexSrc);
+    glError(gl, 'compileShader: vertex');
+    const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fragmentSrc);
+    glError(gl, 'compileShader: fragment');
     this.program = gl.createProgram() as WebGLProgram;
     if (!this.program || !vertexShader || !fragmentShader) throw new Error('createProgram');
     gl.attachShader(this.program, vertexShader);
@@ -104,17 +107,17 @@ class GLProgram { // Wrapper class for WebGL program and its utility functions
     gl.bindAttribLocation(this.program, 1, 'input_tex_coord');
     gl.linkProgram(this.program);
     gl.useProgram(this.program);
-    glError('createProgram');
+    glError(gl, 'createProgram');
     this.cachedUniformLocations = new Map();
   }
 
   useProgram(): void {
-    gl.useProgram(this.program);
+    this.gl.useProgram(this.program);
   }
 
   getUniformLocation(symbol: string): WebGLUniformLocation {
     if (this.cachedUniformLocations.has(symbol)) return this.cachedUniformLocations.get(symbol);
-    const location = gl.getUniformLocation(this.program, symbol);
+    const location = this.gl.getUniformLocation(this.program, symbol);
     this.cachedUniformLocations.set(symbol, location);
     if (!location) throw new Error(`getUniformLocation: ${symbol}`);
     return location;
@@ -124,8 +127,10 @@ class GLProgram { // Wrapper class for WebGL program and its utility functions
 class FullscreenQuad { // Utility class for drawing
   squareVerticesBuffer: WebGLBuffer;
   textureVerticesBuffer: WebGLBuffer;
+  gl: WebGL2RenderingContext;
 
-  constructor() {
+  constructor(gl: WebGL2RenderingContext) {
+    this.gl = gl;
     this.squareVerticesBuffer = gl.createBuffer() as WebGLBuffer;
     if (!this.squareVerticesBuffer) throw new Error('squareVerticesBuffer');
     gl.bindBuffer(gl.ARRAY_BUFFER, this.squareVerticesBuffer);
@@ -137,13 +142,13 @@ class FullscreenQuad { // Utility class for drawing
   }
 
   draw(): void { // Draws a quad covering the entire bound framebuffer.
-    gl.enableVertexAttribArray(0); // vertex
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.squareVerticesBuffer);
-    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(1);
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.textureVerticesBuffer);
-    gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    this.gl.enableVertexAttribArray(0); // vertex
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.squareVerticesBuffer);
+    this.gl.vertexAttribPointer(0, 2, this.gl.FLOAT, false, 0, 0);
+    this.gl.enableVertexAttribArray(1);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureVerticesBuffer);
+    this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 0, 0);
+    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
   }
 }
 
@@ -151,41 +156,47 @@ class GLProcessor { // Utility class for processoring a shader
   quad: FullscreenQuad;
   program: GLProgram;
   frame: GLFrameBuffer;
+  gl: WebGL2RenderingContext;
 
-  constructor(shader: string, width: number, height: number) {
-    this.quad = new FullscreenQuad();
-    this.program = new GLProgram(vertexShaderSrc, shader);
-    this.frame = new GLFrameBuffer(width, height); // create initial framebuffer
+  constructor(glContext: WebGL2RenderingContext, shaderSrc: string, canvas: HTMLCanvasElement) {
+    this.gl = glContext;
+    this.gl.viewport(0, 0, canvas.width, canvas.height); // initial set viewport
+    this.gl.scissor(0, 0, canvas.width, canvas.height); // initial set scissor
+    this.quad = new FullscreenQuad(this.gl);
+    this.program = new GLProgram(this.gl, vertexShaderSrc, shaderSrc);
+    this.frame = new GLFrameBuffer(this.gl, canvas.width, canvas.height); // create initial framebuffer
   }
 
   bindTextures(textures: Array<[name: string, tex: GLTexture]>) {
     let textureId = 0;
     for (const [name, texture] of textures) {
       const loc = this.program.getUniformLocation(name);
-      gl.activeTexture(gl.TEXTURE0 + textureId); // Make the textureId unit active.
+      this.gl.activeTexture(this.gl.TEXTURE0 + textureId); // Make the textureId unit active.
       texture.bindTexture(); // Binds the texture to a TEXTURE_2D target.
-      gl.uniform1i(loc, textureId); // Binds the texture at given location to texture unit textureId.
+      this.gl.uniform1i(loc, textureId); // Binds the texture at given location to texture unit textureId.
       textureId++;
     }
+  }
+
+  flipFramebuffers() {
+    this.gl.bindFramebuffer(this.gl.DRAW_FRAMEBUFFER, null); // set rendering back to default framebuffer
+    this.gl.bindFramebuffer(this.gl.READ_FRAMEBUFFER, this.frame.framebuffer); // cache data from result texture drawn in the gl.READ_FRAMEBUFFER
+    this.gl.blitFramebuffer(0, 0, this.frame.width, this.frame.height, 0, this.frame.height, this.frame.width, 0, this.gl.COLOR_BUFFER_BIT, this.gl.LINEAR); // transfer data from read framebuffer to default framebuffer
   }
 }
 
 let processor: GLProcessor;
 
 export function drawTexture(canvas: HTMLCanvasElement, texture: WebGLTexture): void {
-  if (gl?.canvas !== canvas) {
-    gl = canvas.getContext('webgl2') as WebGL2RenderingContext;
+  if (processor?.gl?.canvas !== canvas) {
+    const gl = canvas.getContext('webgl2') as WebGL2RenderingContext;
     if (!gl) throw new Error('getContext: webgl2');
-    processor = new GLProcessor(fragmentShaderSrc, canvas.width, canvas.height); // creates new instance of the main class
-    gl.viewport(0, 0, processor.frame.width, processor.frame.height); // initial set viewport
-    gl.scissor(0, 0, processor.frame.width, processor.frame.height); // initial set scissor
+    processor = new GLProcessor(gl, fragmentShaderSrc, canvas); // creates new instance of the main class
   }
-  const mask = new GLTexture(texture, processor.frame.width, processor.frame.height); // create usable texture from tensor data
+  const mask = new GLTexture(processor.gl, texture, processor.frame.width, processor.frame.height); // create usable texture from tensor data
   processor.program.useProgram(); // switch to this program if something else was using webgl
   processor.bindTextures([['mask', mask]]); // upload texture to gpu
   processor.frame.bindFramebuffer(); // bind to our framebuffer
   processor.quad.draw(); // draw textures using quads
-  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null); // set rendering back to default framebuffer
-  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, processor.frame.framebuffer); // cache data from result texture drawn in the gl.READ_FRAMEBUFFER
-  gl.blitFramebuffer(0, 0, processor.frame.width, processor.frame.height, 0, processor.frame.height, processor.frame.width, 0, gl.COLOR_BUFFER_BIT, gl.LINEAR); // transfer data from read framebuffer to default framebuffer
+  processor.flipFramebuffers(); // flip read framebuffer to draw framebuffer
 }

@@ -1,20 +1,28 @@
 # Anime Cartoonization
 
+**Live Demo: <https://vladmandic.github.io/anime/public/>**
+
+<br>
+
 ## Implementation
 
 Couple of different implementations of processing:
-- `public/index.html` & `src/anime.ts`  
-  Using TFJS in browser  
+- Using **TFJS** in browser  
   Processing using `@tensorflow/tfjs-backend-webgl`  
-- `public/sockets.html` & `src/sockets.ts` client-side  
+  `public/index.html` & `src/anime.ts`  
+- Using **WebSockets** to send frame data to **NodeJS** backend for processing and receiving data back  
+  Processing using `@tensorflow/tfjs-node-gpu` with **CUDA** acceleration  
+  `public/sockets.html` & `src/sockets.ts` client-side  
   `src/node.ts` server-side  
-  Using WebSockets to send frame data to NodeJS backend for processing and receiving data back  
-  Processing using `@tensorflow/tfjs-node-gpu` with CUDA acceleration  
+
+<br>
 
 ## Screenshot
 
 ![Original](assets/me.jpg)
 ![Processed](assets/out.jpg)
+
+<br>
 
 # Credits
 

@@ -71647,7 +71647,7 @@ async function registerWebGLbackend(canvas2) {
 // src/canvas.ts
 var gl;
 var vertexShaderSrc = `#version 300 es
-  precision highp float;
+  precision mediump float;
   in vec4 position;
   in vec4 input_tex_coord;
   out vec2 tex_coord;
@@ -71726,7 +71726,7 @@ var compileShader = (type, src) => {
     throw new Error(`compileShader: ${err2}`);
   return shader;
 };
-var GlProgramImpl = class {
+var GLProgram = class {
   constructor(vertexSrc, fragmentSrc) {
     __publicField(this, "program");
     __publicField(this, "cachedUniformLocations");
@@ -71790,7 +71790,7 @@ var GLProcessor = class {
     __publicField(this, "program");
     __publicField(this, "frame");
     this.quad = new FullscreenQuad();
-    this.program = new GlProgramImpl(vertexShaderSrc, shader);
+    this.program = new GLProgram(vertexShaderSrc, shader);
     this.frame = new GLFrameBuffer(width, height);
   }
   bindTextures(textures) {

@@ -3,7 +3,7 @@
 let gl: WebGL2RenderingContext;
 
 const vertexShaderSrc = `#version 300 es
-  precision highp float;
+  precision mediump float;
   in vec4 position;
   in vec4 input_tex_coord;
   out vec2 tex_coord;
@@ -87,7 +87,7 @@ const compileShader = (type: number, src: string): WebGLShader => {
   return shader;
 };
 
-class GlProgramImpl { // Wrapper class for WebGL program and its utility functions
+class GLProgram { // Wrapper class for WebGL program and its utility functions
   program: WebGLProgram;
   cachedUniformLocations;
 
@@ -149,12 +149,12 @@ class FullscreenQuad { // Utility class for drawing
 
 class GLProcessor { // Utility class for processoring a shader
   quad: FullscreenQuad;
-  program: GlProgramImpl;
+  program: GLProgram;
   frame: GLFrameBuffer;
 
   constructor(shader: string, width: number, height: number) {
     this.quad = new FullscreenQuad();
-    this.program = new GlProgramImpl(vertexShaderSrc, shader);
+    this.program = new GLProgram(vertexShaderSrc, shader);
     this.frame = new GLFrameBuffer(width, height); // create initial framebuffer
   }
 

@@ -1,26 +1,5 @@
 /* eslint-disable max-classes-per-file */
 
-const vertexShaderSrc = `#version 300 es
-  precision mediump float;
-  in vec4 position;
-  in vec4 input_tex_coord;
-  out vec2 tex_coord;
-  void main() {
-    gl_Position = position;
-    tex_coord = input_tex_coord.xy;
-  }`;
-
-const fragmentShaderSrc = `#version 300 es
-precision mediump float;
-uniform sampler2D mask;
-in highp vec2 tex_coord;
-out vec4 out_color;
-void main() {
-  vec2 coord = vec2(tex_coord[0], tex_coord[1]);
-  vec4 color = texture(mask, coord).rgba;
-  out_color = vec4(color.rgba);
-}`;
-
 const glError = (gl: WebGL2RenderingContext, label: string): boolean => {
   const err = gl.getError();
   if (err !== gl.NO_ERROR) throw new Error(`glError: ${label} ${err}`);
@@ -129,20 +108,39 @@ class GLProcessor { // main utility class
   gl: WebGL2RenderingContext;
   squareVerticesBuffer: WebGLBuffer;
   textureVerticesBuffer: WebGLBuffer;
+  vertexShaderSrc = `#version 300 es
+    precision mediump float;
+    in vec4 position;
+    in vec4 input_tex_coord;
+    out vec2 tex_coord;
+    void main() {
+      gl_Position = position;
+      tex_coord = input_tex_coord.xy;
+    }`;
+  fragmentShaderSrc = `#version 300 es
+  precision mediump float;
+  uniform sampler2D mask;
+  in highp vec2 tex_coord;
+  out vec4 out_color;
+  void main() {
+    vec2 coord = vec2(tex_coord[0], tex_coord[1]);
+    vec4 color = texture(mask, coord).rgba;
+    out_color = vec4(color.rgba);
+  }`;
 
-  constructor(gl: WebGL2RenderingContext, shaderSrc: string, canvas: HTMLCanvasElement) {
+  constructor(gl: WebGL2RenderingContext) {
     this.gl = gl;
-    this.gl.viewport(0, 0, canvas.width, canvas.height); // initial set viewport
-    this.gl.scissor(0, 0, canvas.width, canvas.height); // initial set scissor
-    this.program = new GLProgram(this.gl, vertexShaderSrc, shaderSrc);
-    this.frame = new GLFrameBuffer(this.gl, canvas.width, canvas.height); // create initial framebuffer
+    this.gl.viewport(0, 0, gl.canvas.width, gl.canvas.height); // initial set viewport
+    this.gl.scissor(0, 0, gl.canvas.width, gl.canvas.height); // initial set scissor
+    this.program = new GLProgram(this.gl, this.vertexShaderSrc, this.fragmentShaderSrc); // create vertex and fragment shader programs
+    this.frame = new GLFrameBuffer(this.gl, gl.canvas.width, gl.canvas.height); // create initial framebuffer
 
-    this.squareVerticesBuffer = this.gl.createBuffer() as WebGLBuffer;
+    this.squareVerticesBuffer = this.gl.createBuffer() as WebGLBuffer; // create vertices that cover entire draw area as square
     if (!this.squareVerticesBuffer) throw new Error('squareVerticesBuffer');
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.squareVerticesBuffer);
     this.gl.bufferData(this.gl.ARRAY_BUFFER, Float32Array.from([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
 
-    this.textureVerticesBuffer = this.gl.createBuffer() as WebGLBuffer;
+    this.textureVerticesBuffer = this.gl.createBuffer() as WebGLBuffer; // create texture vertices that accompany square
     if (!this.textureVerticesBuffer) throw new Error('textureVerticesBuffer');
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureVerticesBuffer);
     this.gl.bufferData(this.gl.ARRAY_BUFFER, Float32Array.from([0, 0, 1, 0, 0, 1, 1, 1]), gl.STATIC_DRAW);
@@ -159,7 +157,7 @@ class GLProcessor { // main utility class
     }
   }
 
-  flipFramebuffers() {
+  flipFramebuffers() { // flip read framebuffer to draw framebuffer
     this.gl.bindFramebuffer(this.gl.DRAW_FRAMEBUFFER, null); // set rendering back to default framebuffer
     this.gl.bindFramebuffer(this.gl.READ_FRAMEBUFFER, this.frame.framebuffer); // cache data from result texture drawn in the gl.READ_FRAMEBUFFER
     this.gl.blitFramebuffer(0, 0, this.frame.width, this.frame.height, 0, this.frame.height, this.frame.width, 0, this.gl.COLOR_BUFFER_BIT, this.gl.LINEAR); // transfer data from read framebuffer to default framebuffer
@@ -176,13 +174,16 @@ class GLProcessor { // main utility class
   }
 }
 
-let processor: GLProcessor;
+let processor: GLProcessor; // class instance created on first use
 
-export function drawTexture(canvas: HTMLCanvasElement, texture: WebGLTexture): void {
+export function drawTexture(canvas: HTMLCanvasElement, texture: WebGLTexture): void { // input texture is assumed to be be in [width,height,rgba] format // if your texture is [rgb], expand it to [rgba] before calling drawTexture
   if (processor?.gl?.canvas !== canvas) {
+    // note that gl context must be same between canvas and tfjs webgl backend engine
+    // to ensure that register a custom backend engine that uses canvas gl context
+    // see backend.ts:registerWebGLbackend()
     const gl = canvas.getContext('webgl2') as WebGL2RenderingContext;
     if (!gl) throw new Error('getContext: webgl2');
-    processor = new GLProcessor(gl, fragmentShaderSrc, canvas); // creates new instance of the main class
+    processor = new GLProcessor(gl); // creates new instance of the main class
   }
   const mask = new GLTexture(processor.gl, texture, processor.frame.width, processor.frame.height); // create usable texture from tensor data
   processor.program.useProgram(); // switch to this program if something else was using webgl

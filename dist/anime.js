@@ -71645,25 +71645,6 @@ async function registerWebGLbackend(canvas2) {
 }
 
 // src/canvas.ts
-var vertexShaderSrc = `#version 300 es
-  precision mediump float;
-  in vec4 position;
-  in vec4 input_tex_coord;
-  out vec2 tex_coord;
-  void main() {
-    gl_Position = position;
-    tex_coord = input_tex_coord.xy;
-  }`;
-var fragmentShaderSrc = `#version 300 es
-precision mediump float;
-uniform sampler2D mask;
-in highp vec2 tex_coord;
-out vec4 out_color;
-void main() {
-  vec2 coord = vec2(tex_coord[0], tex_coord[1]);
-  vec4 color = texture(mask, coord).rgba;
-  out_color = vec4(color.rgba);
-}`;
 var glError = (gl, label) => {
   const err2 = gl.getError();
   if (err2 !== gl.NO_ERROR)
@@ -71764,17 +71745,36 @@ var GLProgram = class {
   }
 };
 var GLProcessor = class {
-  constructor(gl, shaderSrc, canvas2) {
+  constructor(gl) {
     __publicField(this, "program");
     __publicField(this, "frame");
     __publicField(this, "gl");
     __publicField(this, "squareVerticesBuffer");
     __publicField(this, "textureVerticesBuffer");
+    __publicField(this, "vertexShaderSrc", `#version 300 es
+    precision mediump float;
+    in vec4 position;
+    in vec4 input_tex_coord;
+    out vec2 tex_coord;
+    void main() {
+      gl_Position = position;
+      tex_coord = input_tex_coord.xy;
+    }`);
+    __publicField(this, "fragmentShaderSrc", `#version 300 es
+  precision mediump float;
+  uniform sampler2D mask;
+  in highp vec2 tex_coord;
+  out vec4 out_color;
+  void main() {
+    vec2 coord = vec2(tex_coord[0], tex_coord[1]);
+    vec4 color = texture(mask, coord).rgba;
+    out_color = vec4(color.rgba);
+  }`);
     this.gl = gl;
-    this.gl.viewport(0, 0, canvas2.width, canvas2.height);
-    this.gl.scissor(0, 0, canvas2.width, canvas2.height);
-    this.program = new GLProgram(this.gl, vertexShaderSrc, shaderSrc);
-    this.frame = new GLFrameBuffer(this.gl, canvas2.width, canvas2.height);
+    this.gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+    this.gl.scissor(0, 0, gl.canvas.width, gl.canvas.height);
+    this.program = new GLProgram(this.gl, this.vertexShaderSrc, this.fragmentShaderSrc);
+    this.frame = new GLFrameBuffer(this.gl, gl.canvas.width, gl.canvas.height);
     this.squareVerticesBuffer = this.gl.createBuffer();
     if (!this.squareVerticesBuffer)
       throw new Error("squareVerticesBuffer");
@@ -71818,7 +71818,7 @@ function drawTexture(canvas2, texture) {
     const gl = canvas2.getContext("webgl2");
     if (!gl)
       throw new Error("getContext: webgl2");
-    processor = new GLProcessor(gl, fragmentShaderSrc, canvas2);
+    processor = new GLProcessor(gl);
   }
   const mask = new GLTexture(processor.gl, texture, processor.frame.width, processor.frame.height);
   processor.program.useProgram();

@@ -21,22 +21,8 @@ export const config = {
   },
 };
 
-function extensions(): void {
-  /*
-  https://www.khronos.org/registry/webgl/extensions/
-  https://webglreport.com/?v=2
-  */
-  const gl = config.gl;
-  if (!gl) return;
-  config.extensions = gl.getSupportedExtensions() as string[];
-  // gl.getExtension('KHR_parallel_shader_compile');
-}
-
 export async function registerWebGLbackend(canvas: HTMLCanvasElement): Promise<WebGL2RenderingContext | null> {
   config.canvas = canvas;
-  if ((config.name in tf.engine().registry) && (!config.gl || !config.gl.getParameter(config.gl.VERSION))) {
-    log('error: invalid context');
-  }
   if (tf.findBackend(config.name)) return config.gl as WebGL2RenderingContext;
   try {
     config.gl = config.canvas?.getContext('webgl2', config.webGLattr) as WebGL2RenderingContext;
@@ -45,18 +31,16 @@ export async function registerWebGLbackend(canvas: HTMLCanvasElement): Promise<W
       log('error: webgl 2.0 is not detected');
       return null;
     }
-    if (config.canvas) {
-      config.canvas.addEventListener('webglcontextlost', async (e) => {
-        log('error:', e.type);
-        throw new Error('backend error: webgl context lost');
-      });
-      config.canvas.addEventListener('webglcontextrestored', (e) => {
-        log('error: context restored:', e);
-      });
-      config.canvas.addEventListener('webglcontextcreationerror', (e) => {
-        log('error: context create:', e);
-      });
-    }
+    config.canvas.addEventListener('webglcontextlost', async (e) => {
+      log('error:', e.type);
+      throw new Error('backend error: webgl context lost');
+    });
+    config.canvas.addEventListener('webglcontextrestored', (e) => {
+      log('error: context restored:', e);
+    });
+    config.canvas.addEventListener('webglcontextcreationerror', (e) => {
+      log('error: context create:', e);
+    });
   } catch (err) {
     log('error: cannot get webgl context:', err);
     return null;
@@ -85,19 +69,9 @@ export async function registerWebGLbackend(canvas: HTMLCanvasElement): Promise<W
     return null;
   }
   const current = tf.backend().getGPGPUContext ? tf.backend().getGPGPUContext().gl : null;
-  if (current) {
-    log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
-  } else {
-    log('error: no current gl context:', current, config.gl);
-    return null;
-  }
-  try {
-    tf.ENV.set('WEBGL_VERSION', 2);
-  } catch (err) {
-    log('error: cannot set WebGL backend flags:', err);
-    return null;
-  }
-  extensions();
+  if (current) log(`webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
+  else log('error: no current gl context:', current, config.gl);
+  tf.ENV.set('WEBGL_VERSION', 2);
   log('backend registered:', config.name);
   return config.gl;
 }

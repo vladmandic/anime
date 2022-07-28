@@ -4,6 +4,8 @@
   author: <https://github.com/vladmandic>'
 */
 
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
   get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
 }) : x)(function(x) {
@@ -11,15 +13,19 @@ var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require
     return require.apply(this, arguments);
   throw new Error('Dynamic require of "' + x + '" is not supported');
 });
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 
 // ../tfjs/dist/tfjs.esm.js
 var __create = Object.create;
-var __defProp = Object.defineProperty;
+var __defProp2 = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
+var __markAsModule = (target) => __defProp2(target, "__esModule", { value: true });
 var __require2 = ((x) => typeof __require !== "undefined" ? __require : typeof Proxy !== "undefined" ? new Proxy(x, {
   get: (a, b) => (typeof __require !== "undefined" ? __require : a)[b]
 }) : x)(function(x) {
@@ -32,18 +38,18 @@ var __commonJS = (cb, mod4) => function __require22() {
 };
 var __export = (target, all5) => {
   for (var name in all5)
-    __defProp(target, name, { get: all5[name], enumerable: true });
+    __defProp2(target, name, { get: all5[name], enumerable: true });
 };
 var __reExport = (target, module, copyDefault, desc) => {
   if (module && typeof module === "object" || typeof module === "function") {
     for (let key of __getOwnPropNames(module))
       if (!__hasOwnProp.call(target, key) && (copyDefault || key !== "default"))
-        __defProp(target, key, { get: () => module[key], enumerable: !(desc = __getOwnPropDesc(module, key)) || desc.enumerable });
+        __defProp2(target, key, { get: () => module[key], enumerable: !(desc = __getOwnPropDesc(module, key)) || desc.enumerable });
   }
   return target;
 };
 var __toESM = (module, isNodeMode) => {
-  return __reExport(__markAsModule(__defProp(module != null ? __create(__getProtoOf(module)) : {}, "default", !isNodeMode && module && module.__esModule ? { get: () => module.default, enumerable: true } : { value: module, enumerable: true })), module);
+  return __reExport(__markAsModule(__defProp2(module != null ? __create(__getProtoOf(module)) : {}, "default", !isNodeMode && module && module.__esModule ? { get: () => module.default, enumerable: true } : { value: module, enumerable: true })), module);
 };
 var require_long = __commonJS({
   "src/node_modules/long/src/long.js"(exports, module) {
@@ -2959,8 +2965,8 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
           if (!canvas2.getContextSafariWebGL2Fixed) {
             canvas2.getContextSafariWebGL2Fixed = canvas2.getContext;
             canvas2.getContext = function(ver, attrs) {
-              var gl = canvas2.getContextSafariWebGL2Fixed(ver, attrs);
-              return ver == "webgl" == gl instanceof WebGLRenderingContext ? gl : null;
+              var gl2 = canvas2.getContextSafariWebGL2Fixed(ver, attrs);
+              return ver == "webgl" == gl2 instanceof WebGLRenderingContext ? gl2 : null;
             };
           }
           var ctx = canvas2.getContext("webgl", webGLContextAttributes);
@@ -5633,30 +5639,30 @@ function getKernelsForBackend(backendName) {
     if (done) {
       break;
     }
-    const [key, config] = value;
+    const [key, config2] = value;
     const [backend2] = key.split("_");
     if (backend2 === backendName) {
-      result.push(config);
+      result.push(config2);
     }
   }
   return result;
 }
-function registerKernel(config) {
-  const { kernelName, backendName } = config;
+function registerKernel(config2) {
+  const { kernelName, backendName } = config2;
   const key = makeKey(kernelName, backendName);
   if (kernelRegistry.has(key)) {
     warn(`The kernel '${kernelName}' for backend '${backendName}' is already registered`);
   }
-  kernelRegistry.set(key, config);
+  kernelRegistry.set(key, config2);
 }
-function registerGradient(config) {
-  const { kernelName } = config;
+function registerGradient(config2) {
+  const { kernelName } = config2;
   if (gradRegistry.has(kernelName)) {
     if (env().getBool("DEBUG")) {
       warn(`Overriding the gradient for '${kernelName}'`);
     }
   }
-  gradRegistry.set(kernelName, config);
+  gradRegistry.set(kernelName, config2);
 }
 function makeKey(kernelName, backendName) {
   return `${backendName}_${kernelName}`;
@@ -8976,6 +8982,9 @@ function ready() {
 function getBackend() {
   return ENGINE.backendName;
 }
+function findBackend(name) {
+  return ENGINE.findBackend(name);
+}
 function registerBackend(name, factory, priority = 1) {
   return ENGINE.registerBackend(name, factory, priority);
 }
@@ -9855,8 +9864,8 @@ var Serializable = class {
   getClassName() {
     return this.constructor.className;
   }
-  static fromConfig(cls, config) {
-    return new cls(config);
+  static fromConfig(cls, config2) {
+    return new cls(config2);
   }
 };
 var SerializationMap = class {
@@ -14355,8 +14364,8 @@ var AdadeltaOptimizer = class extends Optimizer {
       "epsilon": this.epsilon
     };
   }
-  static fromConfig(cls, config) {
-    return new cls(config["learningRate"], config["rho"], config["epsilon"]);
+  static fromConfig(cls, config2) {
+    return new cls(config2["learningRate"], config2["rho"], config2["epsilon"]);
   }
 };
 AdadeltaOptimizer.className = "Adadelta";
@@ -14412,8 +14421,8 @@ var AdagradOptimizer = class extends Optimizer {
       "initialAccumulatorValue": this.initialAccumulatorValue
     };
   }
-  static fromConfig(cls, config) {
-    return new cls(config["learningRate"], config["initialAccumulatorValue"]);
+  static fromConfig(cls, config2) {
+    return new cls(config2["learningRate"], config2["initialAccumulatorValue"]);
   }
 };
 AdagradOptimizer.className = "Adagrad";
@@ -14514,8 +14523,8 @@ var AdamOptimizer = class extends Optimizer {
       "epsilon": this.epsilon
     };
   }
-  static fromConfig(cls, config) {
-    return new cls(config["learningRate"], config["beta1"], config["beta2"], config["epsilon"]);
+  static fromConfig(cls, config2) {
+    return new cls(config2["learningRate"], config2["beta1"], config2["beta2"], config2["epsilon"]);
   }
 };
 AdamOptimizer.className = "Adam";
@@ -14603,8 +14612,8 @@ var AdamaxOptimizer = class extends Optimizer {
       "decay": this.decay
     };
   }
-  static fromConfig(cls, config) {
-    return new cls(config["learningRate"], config["beta1"], config["beta2"], config["epsilon"], config["decay"]);
+  static fromConfig(cls, config2) {
+    return new cls(config2["learningRate"], config2["beta1"], config2["beta2"], config2["epsilon"], config2["decay"]);
   }
 };
 AdamaxOptimizer.className = "Adamax";
@@ -14652,8 +14661,8 @@ var SGDOptimizer = class extends Optimizer {
   getConfig() {
     return { "learningRate": this.learningRate };
   }
-  static fromConfig(cls, config) {
-    return new cls(config["learningRate"]);
+  static fromConfig(cls, config2) {
+    return new cls(config2["learningRate"]);
   }
 };
 SGDOptimizer.className = "SGD";
@@ -14721,8 +14730,8 @@ var MomentumOptimizer = class extends SGDOptimizer {
       "useNesterov": this.useNesterov
     };
   }
-  static fromConfig(cls, config) {
-    return new cls(config["learningRate"], config["momentum"], config["useNesterov"]);
+  static fromConfig(cls, config2) {
+    return new cls(config2["learningRate"], config2["momentum"], config2["useNesterov"]);
   }
 };
 MomentumOptimizer.className = "Momentum";
@@ -14844,8 +14853,8 @@ var RMSPropOptimizer = class extends Optimizer {
       "centered": this.centered
     };
   }
-  static fromConfig(cls, config) {
-    return new cls(config["learningRate"], config["decay"], config["momentum"], config["epsilon"], config["centered"]);
+  static fromConfig(cls, config2) {
+    return new cls(config2["learningRate"], config2["decay"], config2["momentum"], config2["epsilon"], config2["centered"]);
   }
 };
 RMSPropOptimizer.className = "RMSProp";
@@ -15577,18 +15586,18 @@ function serializeKerasObject(instance) {
   dict["config"] = instance.getConfig();
   return dict;
 }
-function convertNDArrayScalarsInConfig(config) {
-  if (config == null || typeof config !== "object") {
+function convertNDArrayScalarsInConfig(config2) {
+  if (config2 == null || typeof config2 !== "object") {
     return;
-  } else if (Array.isArray(config)) {
-    config.forEach((configItem) => convertNDArrayScalarsInConfig(configItem));
+  } else if (Array.isArray(config2)) {
+    config2.forEach((configItem) => convertNDArrayScalarsInConfig(configItem));
   } else {
-    const fields = Object.keys(config);
+    const fields = Object.keys(config2);
     for (const field of fields) {
-      const value = config[field];
+      const value = config2[field];
       if (value != null && typeof value === "object") {
         if (!Array.isArray(value) && value["type"] === "ndarray" && typeof value["value"] === "number") {
-          config[field] = value["value"];
+          config2[field] = value["value"];
         } else {
           convertNDArrayScalarsInConfig(value);
         }
@@ -15614,12 +15623,12 @@ function deserializeKerasObject(identifier, moduleObjects = {}, customObjects = 
     }
     return fn;
   } else {
-    const config = identifier;
-    if (config["className"] == null || config["config"] == null) {
-      throw new ValueError(`${printableModuleName}: Improper config format: ${JSON.stringify(config)}.
+    const config2 = identifier;
+    if (config2["className"] == null || config2["config"] == null) {
+      throw new ValueError(`${printableModuleName}: Improper config format: ${JSON.stringify(config2)}.
 'className' and 'config' must set.`);
     }
-    const className = config["className"];
+    const className = config2["className"];
     let cls, fromConfig;
     if (className in customObjects) {
       [cls, fromConfig] = customObjects[className];
@@ -15641,14 +15650,14 @@ function deserializeKerasObject(identifier, moduleObjects = {}, customObjects = 
       for (const key of Object.keys(customObjects)) {
         customObjectsCombined[key] = customObjects[key];
       }
-      const nestedConfig = config["config"];
+      const nestedConfig = config2["config"];
       nestedConfig["customObjects"] = customObjectsCombined;
       const backupCustomObjects = { ..._GLOBAL_CUSTOM_OBJECTS };
       for (const key of Object.keys(customObjects)) {
         _GLOBAL_CUSTOM_OBJECTS[key] = customObjects[key];
       }
-      convertNDArrayScalarsInConfig(config["config"]);
-      const returnObj = fromConfig(cls, config["config"], customObjects, fastWeightInit);
+      convertNDArrayScalarsInConfig(config2["config"]);
+      const returnObj = fromConfig(cls, config2["config"], customObjects, fastWeightInit);
       _GLOBAL_CUSTOM_OBJECTS = { ...backupCustomObjects };
       return returnObj;
     } else {
@@ -15656,7 +15665,7 @@ function deserializeKerasObject(identifier, moduleObjects = {}, customObjects = 
       for (const key of Object.keys(customObjects)) {
         _GLOBAL_CUSTOM_OBJECTS[key] = customObjects[key];
       }
-      const returnObj = new cls(config["config"]);
+      const returnObj = new cls(config2["config"]);
       _GLOBAL_CUSTOM_OBJECTS = { ...backupCustomObjects };
       return returnObj;
     }
@@ -16548,8 +16557,8 @@ var INITIALIZER_IDENTIFIER_REGISTRY_SYMBOL_MAP = {
   "varianceScaling": "VarianceScaling",
   "zeros": "Zeros"
 };
-function deserializeInitializer(config, customObjects = {}) {
-  return deserializeKerasObject(config, serialization_exports.SerializationMap.getMap().classNameMap, customObjects, "initializer");
+function deserializeInitializer(config2, customObjects = {}) {
+  return deserializeKerasObject(config2, serialization_exports.SerializationMap.getMap().classNameMap, customObjects, "initializer");
 }
 function serializeInitializer(initializer) {
   return serializeKerasObject(initializer);
@@ -16570,10 +16579,10 @@ function getInitializer(identifier) {
     } else if (className === "LeCunUniform") {
       return new LeCunUniform();
     } else {
-      const config = {};
-      config["className"] = className;
-      config["config"] = {};
-      return deserializeInitializer(config);
+      const config2 = {};
+      config2["className"] = className;
+      config2["config"] = {};
+      return deserializeInitializer(config2);
     }
   } else if (identifier instanceof Initializer) {
     return identifier;
@@ -17212,14 +17221,14 @@ var Layer = class extends serialization_exports.Serializable {
     }
   }
   getConfig() {
-    const config = { name: this.name, trainable: this.trainable };
+    const config2 = { name: this.name, trainable: this.trainable };
     if (this.batchInputShape != null) {
-      config["batchInputShape"] = this.batchInputShape;
+      config2["batchInputShape"] = this.batchInputShape;
     }
     if (this.dtype != null) {
-      config["dtype"] = this.dtype;
+      config2["dtype"] = this.dtype;
     }
-    return config;
+    return config2;
   }
   disposeWeights() {
     this.weights.forEach((weight) => weight.dispose());
@@ -17351,26 +17360,26 @@ var InputLayer = class extends Layer {
 };
 InputLayer.className = "InputLayer";
 serialization_exports.registerClass(InputLayer);
-function Input(config) {
-  if (config.batchShape == null && config.shape == null) {
+function Input(config2) {
+  if (config2.batchShape == null && config2.shape == null) {
     throw new Error("Please provide to Input either a `shape` or a `batchShape` argument. Note that `shape` does not include the batch dimension.");
   }
-  if (config.batchShape != null && config.shape != null) {
+  if (config2.batchShape != null && config2.shape != null) {
     throw new ValueError("Please provide either a `shape` or `batchShape` argument to Input, but not both.");
   }
-  let batchShape = config.batchShape;
-  if (config.shape != null && batchShape == null) {
-    batchShape = [null].concat(config.shape);
+  let batchShape = config2.batchShape;
+  if (config2.shape != null && batchShape == null) {
+    batchShape = [null].concat(config2.shape);
   }
-  let dtype = config.dtype;
+  let dtype = config2.dtype;
   if (dtype == null) {
     dtype = "float32";
   }
   const inputLayer2 = new InputLayer({
     batchInputShape: batchShape,
-    name: config.name,
+    name: config2.name,
     dtype,
-    sparse: config.sparse
+    sparse: config2.sparse
   });
   const outputs = inputLayer2.inboundNodes[0].outputTensors;
   return outputs[0];
@@ -19352,8 +19361,8 @@ var CONSTRAINT_IDENTIFIER_REGISTRY_SYMBOL_MAP = {
 function serializeConstraint(constraint) {
   return serializeKerasObject(constraint);
 }
-function deserializeConstraint(config, customObjects = {}) {
-  return deserializeKerasObject(config, serialization_exports.SerializationMap.getMap().classNameMap, customObjects, "constraint");
+function deserializeConstraint(config2, customObjects = {}) {
+  return deserializeKerasObject(config2, serialization_exports.SerializationMap.getMap().classNameMap, customObjects, "constraint");
 }
 function getConstraint(identifier) {
   if (identifier == null) {
@@ -19361,8 +19370,8 @@ function getConstraint(identifier) {
   }
   if (typeof identifier === "string") {
     const className = identifier in CONSTRAINT_IDENTIFIER_REGISTRY_SYMBOL_MAP ? CONSTRAINT_IDENTIFIER_REGISTRY_SYMBOL_MAP[identifier] : identifier;
-    const config = { className, config: {} };
-    return deserializeConstraint(config);
+    const config2 = { className, config: {} };
+    return deserializeConstraint(config2);
   } else if (identifier instanceof Constraint) {
     return identifier;
   } else {
@@ -19378,8 +19387,8 @@ function unitNorm(args) {
 function nonNeg() {
   return new NonNeg();
 }
-function minMaxNorm(config) {
-  return new MinMaxNorm(config);
+function minMaxNorm(config2) {
+  return new MinMaxNorm(config2);
 }
 var exports_initializers_exports = {};
 __export(exports_initializers_exports, {
@@ -19420,8 +19429,8 @@ function truncatedNormal2(args) {
 function identity(args) {
   return new Identity2(args);
 }
-function varianceScaling(config) {
-  return new VarianceScaling(config);
+function varianceScaling(config2) {
+  return new VarianceScaling(config2);
 }
 function glorotUniform(args) {
   return new GlorotUniform(args);
@@ -19902,8 +19911,8 @@ function configureCallbacks(callbacks2, verbose, epochs, initialEpoch, numTrainS
   });
   return { callbackList, history };
 }
-function deserialize(config, customObjects = {}, fastWeightInit = false) {
-  return deserializeKerasObject(config, serialization_exports.SerializationMap.getMap().classNameMap, customObjects, "layer", fastWeightInit);
+function deserialize(config2, customObjects = {}, fastWeightInit = false) {
+  return deserializeKerasObject(config2, serialization_exports.SerializationMap.getMap().classNameMap, customObjects, "layer", fastWeightInit);
 }
 function l2Normalize(x, axis) {
   return tidy(() => {
@@ -20994,7 +21003,7 @@ var Container = class extends Layer {
     });
   }
   getConfig() {
-    const config = { name: this.name };
+    const config2 = { name: this.name };
     const nodeConversionMap = this.buildNodeConversionMap(this.layers);
     const layerConfigs = [];
     for (const layer of this.layers) {
@@ -21039,7 +21048,7 @@ var Container = class extends Layer {
       dict["inboundNodes"] = filteredInboundNodes;
       layerConfigs.push(dict);
     }
-    config["layers"] = layerConfigs;
+    config2["layers"] = layerConfigs;
     const modelInputs = [];
     for (let i = 0; i < this.inputLayers.length; i++) {
       const layer = this.inputLayers[i];
@@ -21055,7 +21064,7 @@ var Container = class extends Layer {
       const tensorIndex = this.inputLayersTensorIndices[i];
       modelInputs.push([layer.name, newNodeIndex, tensorIndex]);
     }
-    config["inputLayers"] = modelInputs;
+    config2["inputLayers"] = modelInputs;
     const modelOutputs = [];
     for (let i = 0; i < this.outputLayers.length; i++) {
       const layer = this.outputLayers[i];
@@ -21071,10 +21080,10 @@ var Container = class extends Layer {
       const tensorIndex = this.outputLayersTensorIndices[i];
       modelOutputs.push([layer.name, newNodeIndex, tensorIndex]);
     }
-    config["outputLayers"] = modelOutputs;
-    return config;
+    config2["outputLayers"] = modelOutputs;
+    return config2;
   }
-  static fromConfig(cls, config, customObjects = {}, fastWeightInit = false) {
+  static fromConfig(cls, config2, customObjects = {}, fastWeightInit = false) {
     const createdLayers = {};
     const unprocessedNodes = {};
     function addUnprocessedNode(layer, nodeData) {
@@ -21110,7 +21119,7 @@ var Container = class extends Layer {
     }
     function processLayer(layerData) {
       const layerName = layerData["name"];
-      const layer = deserialize(layerData, config["customObjects"] != null ? config["customObjects"] : {});
+      const layer = deserialize(layerData, config2["customObjects"] != null ? config2["customObjects"] : {});
       layer.setFastWeightInitDuringBuild(fastWeightInit);
       createdLayers[layerName] = layer;
       const inboundNodesData = layerData["inboundNodes"];
@@ -21121,8 +21130,8 @@ var Container = class extends Layer {
         addUnprocessedNode(layer, nodeData);
       });
     }
-    const name = config["name"];
-    const layersFromConfig = config["layers"];
+    const name = config2["name"];
+    const layersFromConfig = config2["layers"];
     for (const layerData of layersFromConfig) {
       processLayer(layerData);
     }
@@ -21140,7 +21149,7 @@ var Container = class extends Layer {
     }
     const inputTensors = [];
     const outputTensors = [];
-    const inputLayersFromConfig = config["inputLayers"];
+    const inputLayersFromConfig = config2["inputLayers"];
     for (const layerData of inputLayersFromConfig) {
       const layerName = layerData[0];
       const nodeIndex = layerData[1];
@@ -21150,7 +21159,7 @@ var Container = class extends Layer {
       const layerOutputTensors = layer.inboundNodes[nodeIndex].outputTensors;
       inputTensors.push(layerOutputTensors[tensorIndex]);
     }
-    const outputLayersFromConfig = config["outputLayers"];
+    const outputLayersFromConfig = config2["outputLayers"];
     for (const layerData of outputLayersFromConfig) {
       const layerName = layerData[0];
       const nodeIndex = layerData[1];
@@ -22445,9 +22454,9 @@ var LayersModel = class extends Container {
     disposeNewTensors(standardizeOut[1], y);
     return singletonOrArray(lossValues);
   }
-  getNamedWeights(config) {
+  getNamedWeights(config2) {
     const namedWeights = [];
-    const trainableOnly = config != null && config.trainableOnly;
+    const trainableOnly = config2 != null && config2.trainableOnly;
     const weights = trainableOnly ? this.trainableWeights : this.weights;
     const weightValues = this.getWeights(trainableOnly);
     for (let i = 0; i < weights.length; ++i) {
@@ -22564,7 +22573,7 @@ var LayersModel = class extends Container {
     }
     this.compile({ loss, metrics, optimizer });
   }
-  async save(handlerOrURL, config) {
+  async save(handlerOrURL, config2) {
     if (typeof handlerOrURL === "string") {
       const handlers = io_exports.getSaveHandlers(handlerOrURL);
       if (handlers.length === 0) {
@@ -22577,7 +22586,7 @@ var LayersModel = class extends Container {
     if (handlerOrURL.save == null) {
       throw new ValueError("LayersModel.save() cannot proceed because the IOHandler provided does not have the `save` attribute defined.");
     }
-    const weightDataAndSpecs = await io_exports.encodeWeights(this.getNamedWeights(config));
+    const weightDataAndSpecs = await io_exports.encodeWeights(this.getNamedWeights(config2));
     const returnString = false;
     const unusedArg = null;
     const modelConfig = this.toJSON(unusedArg, returnString);
@@ -22587,7 +22596,7 @@ var LayersModel = class extends Container {
       generatedBy: `TensorFlow.js tfjs-layers v${version2}`,
       convertedBy: null
     };
-    const includeOptimizer = config == null ? false : config.includeOptimizer;
+    const includeOptimizer = config2 == null ? false : config2.includeOptimizer;
     if (includeOptimizer && this.optimizer != null) {
       modelArtifacts.trainingConfig = this.getTrainingConfig();
       const weightType = "optimizer";
@@ -22843,19 +22852,19 @@ var _Sequential = class extends LayersModel {
   async trainOnBatch(x, y) {
     return this.model.trainOnBatch(x, y);
   }
-  static fromConfig(cls, config, customObjects = {}, fastWeightInit = false) {
+  static fromConfig(cls, config2, customObjects = {}, fastWeightInit = false) {
     let configArray;
     let extraModelConfig = {};
-    if (config instanceof Array) {
-      if (!(config[0].className != null) || config[0]["className"] === "Merge") {
+    if (config2 instanceof Array) {
+      if (!(config2[0].className != null) || config2[0]["className"] === "Merge") {
         throw new ValueError("Legacy serialization format not supported yet.");
       }
-      configArray = config;
+      configArray = config2;
     } else {
-      util_exports.assert(config["layers"] != null, () => `When the config data for a Sequential model is not an Array, it must be an Object that contains the 'layers' field.`);
-      configArray = config["layers"];
-      delete config["layers"];
-      extraModelConfig = config;
+      util_exports.assert(config2["layers"] != null, () => `When the config data for a Sequential model is not an Array, it must be an Object that contains the 'layers' field.`);
+      configArray = config2["layers"];
+      delete config2["layers"];
+      extraModelConfig = config2;
     }
     const model2 = new cls(extraModelConfig);
     if (!(model2 instanceof _Sequential)) {
@@ -22897,8 +22906,8 @@ var _Sequential = class extends LayersModel {
 var Sequential = _Sequential;
 Sequential.className = "Sequential";
 serialization_exports.registerClass(Sequential);
-function input(config) {
-  return Input(config);
+function input(config2) {
+  return Input(config2);
 }
 var Activation2 = class extends serialization_exports.Serializable {
   getConfig() {
@@ -23006,21 +23015,21 @@ serialization_exports.registerClass(Mish);
 function serializeActivation(activation2) {
   return activation2.getClassName();
 }
-function deserializeActivation(config, customObjects = {}) {
-  return deserializeKerasObject(config, serialization_exports.SerializationMap.getMap().classNameMap, customObjects, "activation");
+function deserializeActivation(config2, customObjects = {}) {
+  return deserializeKerasObject(config2, serialization_exports.SerializationMap.getMap().classNameMap, customObjects, "activation");
 }
 function getActivation(identifier) {
   if (identifier == null) {
-    const config = {};
-    config["className"] = "linear";
-    config["config"] = {};
-    return deserializeActivation(config);
+    const config2 = {};
+    config2["className"] = "linear";
+    config2["config"] = {};
+    return deserializeActivation(config2);
   }
   if (typeof identifier === "string") {
-    const config = {};
-    config["className"] = identifier;
-    config["config"] = {};
-    return deserializeActivation(config);
+    const config2 = {};
+    config2["className"] = identifier;
+    config2["config"] = {};
+    return deserializeActivation(config2);
   } else if (identifier instanceof Activation2) {
     return identifier;
   } else {
@@ -23058,8 +23067,8 @@ var L1L2 = class extends Regularizer {
   getConfig() {
     return { "l1": this.l1, "l2": this.l2 };
   }
-  static fromConfig(cls, config) {
-    return new cls({ l1: config["l1"], l2: config["l2"] });
+  static fromConfig(cls, config2) {
+    return new cls({ l1: config2["l1"], l2: config2["l2"] });
   }
 };
 L1L2.className = "L1L2";
@@ -23078,8 +23087,8 @@ var REGULARIZER_IDENTIFIER_REGISTRY_SYMBOL_MAP = {
 function serializeRegularizer(constraint) {
   return serializeKerasObject(constraint);
 }
-function deserializeRegularizer(config, customObjects = {}) {
-  return deserializeKerasObject(config, serialization_exports.SerializationMap.getMap().classNameMap, customObjects, "regularizer");
+function deserializeRegularizer(config2, customObjects = {}) {
+  return deserializeKerasObject(config2, serialization_exports.SerializationMap.getMap().classNameMap, customObjects, "regularizer");
 }
 function getRegularizer(identifier) {
   if (identifier == null) {
@@ -23087,8 +23096,8 @@ function getRegularizer(identifier) {
   }
   if (typeof identifier === "string") {
     const className = identifier in REGULARIZER_IDENTIFIER_REGISTRY_SYMBOL_MAP ? REGULARIZER_IDENTIFIER_REGISTRY_SYMBOL_MAP[identifier] : identifier;
-    const config = { className, config: {} };
-    return deserializeRegularizer(config);
+    const config2 = { className, config: {} };
+    return deserializeRegularizer(config2);
   } else if (identifier instanceof Regularizer) {
     return identifier;
   } else {
@@ -23115,10 +23124,10 @@ var ReLU = class extends Layer {
     return inputShape;
   }
   getConfig() {
-    const config = { maxValue: this.maxValue };
+    const config2 = { maxValue: this.maxValue };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 ReLU.className = "ReLU";
@@ -23140,10 +23149,10 @@ var LeakyReLU = class extends Layer {
     return inputShape;
   }
   getConfig() {
-    const config = { alpha: this.alpha };
+    const config2 = { alpha: this.alpha };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 LeakyReLU.className = "LeakyReLU";
@@ -23195,15 +23204,15 @@ var PReLU = class extends Layer {
     return prelu(inputs, this.alpha.read());
   }
   getConfig() {
-    const config = {
+    const config2 = {
       alphaInitializer: serializeInitializer(this.alphaInitializer),
       alphaRegularizer: serializeRegularizer(this.alphaRegularizer),
       alphaConstraint: serializeConstraint(this.alphaConstraint),
       sharedAxes: this.sharedAxes
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 PReLU.className = "PReLU";
@@ -23228,10 +23237,10 @@ var ELU = class extends Layer {
     return inputShape;
   }
   getConfig() {
-    const config = { alpha: this.alpha };
+    const config2 = { alpha: this.alpha };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 ELU.className = "ELU";
@@ -23253,10 +23262,10 @@ var ThresholdedReLU = class extends Layer {
     return inputShape;
   }
   getConfig() {
-    const config = { theta: this.theta };
+    const config2 = { theta: this.theta };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 ThresholdedReLU.className = "ThresholdedReLU";
@@ -23279,10 +23288,10 @@ var Softmax3 = class extends Layer {
     return inputShape;
   }
   getConfig() {
-    const config = { axis: this.axis };
+    const config2 = { axis: this.axis };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 Softmax3.className = "Softmax";
@@ -23483,7 +23492,7 @@ var BaseConv = class extends Layer {
     }
   }
   getConfig() {
-    const config = {
+    const config2 = {
       kernelSize: this.kernelSize,
       strides: this.strides,
       padding: this.padding,
@@ -23497,8 +23506,8 @@ var BaseConv = class extends Layer {
       biasConstraint: serializeConstraint(this.biasConstraint)
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 var Conv = class extends BaseConv {
@@ -23571,15 +23580,15 @@ var Conv = class extends BaseConv {
     return outputShape;
   }
   getConfig() {
-    const config = {
+    const config2 = {
       filters: this.filters,
       kernelInitializer: serializeInitializer(this.kernelInitializer),
       kernelRegularizer: serializeRegularizer(this.kernelRegularizer),
       kernelConstraint: serializeConstraint(this.kernelConstraint)
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
   static verifyArgs(args) {
     if (!("filters" in args) || typeof args.filters !== "number" || args.filters < 1) {
@@ -23593,9 +23602,9 @@ var _Conv2D = class extends Conv {
     _Conv2D.verifyArgs(args);
   }
   getConfig() {
-    const config = super.getConfig();
-    delete config["rank"];
-    return config;
+    const config2 = super.getConfig();
+    delete config2["rank"];
+    return config2;
   }
   static verifyArgs(args) {
     if (typeof args.kernelSize !== "number" && !checkArrayTypeAndLength(args.kernelSize, "number", 1, 2)) {
@@ -23612,9 +23621,9 @@ var _Conv3D = class extends Conv {
     _Conv3D.verifyArgs(args);
   }
   getConfig() {
-    const config = super.getConfig();
-    delete config["rank"];
-    return config;
+    const config2 = super.getConfig();
+    delete config2["rank"];
+    return config2;
   }
   static verifyArgs(args) {
     if (typeof args.kernelSize !== "number") {
@@ -23720,9 +23729,9 @@ var Conv2DTranspose = class extends Conv2D2 {
     return outputShape;
   }
   getConfig() {
-    const config = super.getConfig();
-    delete config["dilationRate"];
-    return config;
+    const config2 = super.getConfig();
+    delete config2["dilationRate"];
+    return config2;
   }
 };
 Conv2DTranspose.className = "Conv2DTranspose";
@@ -23833,36 +23842,36 @@ var Conv3DTranspose = class extends Conv3D2 {
     return outputShape;
   }
   getConfig() {
-    const config = super.getConfig();
-    delete config["dilationRate"];
-    return config;
+    const config2 = super.getConfig();
+    delete config2["dilationRate"];
+    return config2;
   }
 };
 Conv3DTranspose.className = "Conv3DTranspose";
 serialization_exports.registerClass(Conv3DTranspose);
 var SeparableConv = class extends Conv {
-  constructor(rank, config) {
-    super(rank, config);
+  constructor(rank, config2) {
+    super(rank, config2);
     this.DEFAULT_DEPTHWISE_INITIALIZER = "glorotUniform";
     this.DEFAULT_POINTWISE_INITIALIZER = "glorotUniform";
     this.depthwiseKernel = null;
     this.pointwiseKernel = null;
-    if (config.filters == null) {
+    if (config2.filters == null) {
       throw new ValueError("The `filters` configuration field is required by SeparableConv, but is unspecified.");
     }
-    if (config.kernelInitializer != null || config.kernelRegularizer != null || config.kernelConstraint != null) {
+    if (config2.kernelInitializer != null || config2.kernelRegularizer != null || config2.kernelConstraint != null) {
       throw new ValueError("Fields kernelInitializer, kernelRegularizer and kernelConstraint are invalid for SeparableConv2D. Use depthwiseInitializer, depthwiseRegularizer, depthwiseConstraint, pointwiseInitializer, pointwiseRegularizer and pointwiseConstraint instead.");
     }
-    if (config.padding != null && config.padding !== "same" && config.padding !== "valid") {
-      throw new ValueError(`SeparableConv${this.rank}D supports only padding modes: 'same' and 'valid', but received ${JSON.stringify(config.padding)}`);
+    if (config2.padding != null && config2.padding !== "same" && config2.padding !== "valid") {
+      throw new ValueError(`SeparableConv${this.rank}D supports only padding modes: 'same' and 'valid', but received ${JSON.stringify(config2.padding)}`);
     }
-    this.depthMultiplier = config.depthMultiplier == null ? 1 : config.depthMultiplier;
-    this.depthwiseInitializer = getInitializer(config.depthwiseInitializer || this.DEFAULT_DEPTHWISE_INITIALIZER);
-    this.depthwiseRegularizer = getRegularizer(config.depthwiseRegularizer);
-    this.depthwiseConstraint = getConstraint(config.depthwiseConstraint);
-    this.pointwiseInitializer = getInitializer(config.depthwiseInitializer || this.DEFAULT_POINTWISE_INITIALIZER);
-    this.pointwiseRegularizer = getRegularizer(config.pointwiseRegularizer);
-    this.pointwiseConstraint = getConstraint(config.pointwiseConstraint);
+    this.depthMultiplier = config2.depthMultiplier == null ? 1 : config2.depthMultiplier;
+    this.depthwiseInitializer = getInitializer(config2.depthwiseInitializer || this.DEFAULT_DEPTHWISE_INITIALIZER);
+    this.depthwiseRegularizer = getRegularizer(config2.depthwiseRegularizer);
+    this.depthwiseConstraint = getConstraint(config2.depthwiseConstraint);
+    this.pointwiseInitializer = getInitializer(config2.depthwiseInitializer || this.DEFAULT_POINTWISE_INITIALIZER);
+    this.pointwiseRegularizer = getRegularizer(config2.pointwiseRegularizer);
+    this.pointwiseConstraint = getConstraint(config2.pointwiseConstraint);
   }
   build(inputShape) {
     inputShape = getExactlyOneShape(inputShape);
@@ -23916,18 +23925,18 @@ var SeparableConv = class extends Conv {
     });
   }
   getConfig() {
-    const config = super.getConfig();
-    delete config["rank"];
-    delete config["kernelInitializer"];
-    delete config["kernelRegularizer"];
-    delete config["kernelConstraint"];
-    config["depthwiseInitializer"] = serializeInitializer(this.depthwiseInitializer);
-    config["pointwiseInitializer"] = serializeInitializer(this.pointwiseInitializer);
-    config["depthwiseRegularizer"] = serializeRegularizer(this.depthwiseRegularizer);
-    config["pointwiseRegularizer"] = serializeRegularizer(this.pointwiseRegularizer);
-    config["depthwiseConstraint"] = serializeConstraint(this.depthwiseConstraint);
-    config["pointwiseConstraint"] = serializeConstraint(this.pointwiseConstraint);
-    return config;
+    const config2 = super.getConfig();
+    delete config2["rank"];
+    delete config2["kernelInitializer"];
+    delete config2["kernelRegularizer"];
+    delete config2["kernelConstraint"];
+    config2["depthwiseInitializer"] = serializeInitializer(this.depthwiseInitializer);
+    config2["pointwiseInitializer"] = serializeInitializer(this.pointwiseInitializer);
+    config2["depthwiseRegularizer"] = serializeRegularizer(this.depthwiseRegularizer);
+    config2["pointwiseRegularizer"] = serializeRegularizer(this.pointwiseRegularizer);
+    config2["depthwiseConstraint"] = serializeConstraint(this.depthwiseConstraint);
+    config2["pointwiseConstraint"] = serializeConstraint(this.pointwiseConstraint);
+    return config2;
   }
 };
 SeparableConv.className = "SeparableConv";
@@ -23945,10 +23954,10 @@ var _Conv1D = class extends Conv {
     this.inputSpec = [{ ndim: 3 }];
   }
   getConfig() {
-    const config = super.getConfig();
-    delete config["rank"];
-    delete config["dataFormat"];
-    return config;
+    const config2 = super.getConfig();
+    delete config2["rank"];
+    delete config2["dataFormat"];
+    return config2;
   }
   static verifyArgs(args) {
     if (typeof args.kernelSize !== "number" && !checkArrayTypeAndLength(args.kernelSize, "number", 1, 1)) {
@@ -24005,10 +24014,10 @@ var Cropping2D = class extends Layer {
     });
   }
   getConfig() {
-    const config = { cropping: this.cropping, dataFormat: this.dataFormat };
+    const config2 = { cropping: this.cropping, dataFormat: this.dataFormat };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 Cropping2D.className = "Cropping2D";
@@ -24053,14 +24062,14 @@ var UpSampling2D = class extends Layer {
     });
   }
   getConfig() {
-    const config = {
+    const config2 = {
       size: this.size,
       dataFormat: this.dataFormat,
       interpolation: this.interpolation
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 UpSampling2D.className = "UpSampling2D";
@@ -24145,12 +24154,12 @@ var DepthwiseConv2D = class extends BaseConv {
     }
   }
   getConfig() {
-    const config = super.getConfig();
-    config["depthMultiplier"] = this.depthMultiplier;
-    config["depthwiseInitializer"] = serializeInitializer(this.depthwiseInitializer);
-    config["depthwiseRegularizer"] = serializeRegularizer(this.depthwiseRegularizer);
-    config["depthwiseConstraint"] = serializeConstraint(this.depthwiseRegularizer);
-    return config;
+    const config2 = super.getConfig();
+    config2["depthMultiplier"] = this.depthMultiplier;
+    config2["depthwiseInitializer"] = serializeInitializer(this.depthwiseInitializer);
+    config2["depthwiseRegularizer"] = serializeRegularizer(this.depthwiseRegularizer);
+    config2["depthwiseConstraint"] = serializeConstraint(this.depthwiseRegularizer);
+    return config2;
   }
 };
 DepthwiseConv2D.className = "DepthwiseConv2D";
@@ -24537,7 +24546,7 @@ var _RNN = class extends Layer {
   }
   getConfig() {
     const baseConfig = super.getConfig();
-    const config = {
+    const config2 = {
       returnSequences: this.returnSequences,
       returnState: this.returnState,
       goBackwards: this.goBackwards,
@@ -24545,21 +24554,21 @@ var _RNN = class extends Layer {
       unroll: this.unroll
     };
     if (this.numConstants != null) {
-      config["numConstants"] = this.numConstants;
+      config2["numConstants"] = this.numConstants;
     }
     const cellConfig = this.cell.getConfig();
     if (this.getClassName() === _RNN.className) {
-      config["cell"] = {
+      config2["cell"] = {
         "className": this.cell.getClassName(),
         "config": cellConfig
       };
     }
-    return { ...cellConfig, ...baseConfig, ...config };
+    return { ...cellConfig, ...baseConfig, ...config2 };
   }
-  static fromConfig(cls, config, customObjects = {}) {
-    const cellConfig = config["cell"];
+  static fromConfig(cls, config2, customObjects = {}) {
+    const cellConfig = config2["cell"];
     const cell = deserialize(cellConfig, customObjects);
-    return new cls(Object.assign(config, { cell }));
+    return new cls(Object.assign(config2, { cell }));
   }
 };
 var RNN = _RNN;
@@ -24656,7 +24665,7 @@ var SimpleRNNCell = class extends RNNCell {
   }
   getConfig() {
     const baseConfig = super.getConfig();
-    const config = {
+    const config2 = {
       units: this.units,
       activation: serializeActivation(this.activation),
       useBias: this.useBias,
@@ -24673,7 +24682,7 @@ var SimpleRNNCell = class extends RNNCell {
       dropout: this.dropout,
       recurrentDropout: this.recurrentDropout
     };
-    return { ...baseConfig, ...config };
+    return { ...baseConfig, ...config2 };
   }
 };
 SimpleRNNCell.className = "SimpleRNNCell";
@@ -24699,8 +24708,8 @@ var SimpleRNN = class extends RNN {
       return super.call(inputs, { mask, training, initialState });
     });
   }
-  static fromConfig(cls, config) {
-    return new cls(config);
+  static fromConfig(cls, config2) {
+    return new cls(config2);
   }
 };
 SimpleRNN.className = "SimpleRNN";
@@ -24810,7 +24819,7 @@ var GRUCell = class extends RNNCell {
   }
   getConfig() {
     const baseConfig = super.getConfig();
-    const config = {
+    const config2 = {
       units: this.units,
       activation: serializeActivation(this.activation),
       recurrentActivation: serializeActivation(this.recurrentActivation),
@@ -24830,7 +24839,7 @@ var GRUCell = class extends RNNCell {
       implementation: this.implementation,
       resetAfter: false
     };
-    return { ...baseConfig, ...config };
+    return { ...baseConfig, ...config2 };
   }
 };
 GRUCell.className = "GRUCell";
@@ -24859,11 +24868,11 @@ var GRU = class extends RNN {
       return super.call(inputs, { mask, training, initialState });
     });
   }
-  static fromConfig(cls, config) {
-    if (config["implmentation"] === 0) {
-      config["implementation"] = 1;
+  static fromConfig(cls, config2) {
+    if (config2["implmentation"] === 0) {
+      config2["implementation"] = 1;
     }
-    return new cls(config);
+    return new cls(config2);
   }
 };
 GRU.className = "GRU";
@@ -24986,7 +24995,7 @@ var LSTMCell = class extends RNNCell {
   }
   getConfig() {
     const baseConfig = super.getConfig();
-    const config = {
+    const config2 = {
       units: this.units,
       activation: serializeActivation(this.activation),
       recurrentActivation: serializeActivation(this.recurrentActivation),
@@ -25006,7 +25015,7 @@ var LSTMCell = class extends RNNCell {
       recurrentDropout: this.recurrentDropout,
       implementation: this.implementation
     };
-    return { ...baseConfig, ...config };
+    return { ...baseConfig, ...config2 };
   }
 };
 LSTMCell.className = "LSTMCell";
@@ -25035,11 +25044,11 @@ var LSTM = class extends RNN {
       return super.call(inputs, { mask, training, initialState });
     });
   }
-  static fromConfig(cls, config) {
-    if (config["implmentation"] === 0) {
-      config["implementation"] = 1;
+  static fromConfig(cls, config2) {
+    if (config2["implmentation"] === 0) {
+      config2["implementation"] = 1;
     }
-    return new cls(config);
+    return new cls(config2);
   }
 };
 LSTM.className = "LSTM";
@@ -25121,12 +25130,12 @@ var StackedRNNCells = class extends RNNCell {
       };
     };
     const cellConfigs = this.cells.map(getCellConfig);
-    const config = { "cells": cellConfigs };
-    return { ...baseConfig, ...config };
+    const config2 = { "cells": cellConfigs };
+    return { ...baseConfig, ...config2 };
   }
-  static fromConfig(cls, config, customObjects = {}) {
+  static fromConfig(cls, config2, customObjects = {}) {
     const cells = [];
-    for (const cellConfig of config["cells"]) {
+    for (const cellConfig of config2["cells"]) {
       cells.push(deserialize(cellConfig, customObjects));
     }
     return new cls({ cells });
@@ -25429,7 +25438,7 @@ var ConvLSTM2DCell = class extends LSTMCell {
   }
   getConfig() {
     const { "units": _, ...baseConfig } = super.getConfig();
-    const config = {
+    const config2 = {
       filters: this.filters,
       kernelSize: this.kernelSize,
       padding: this.padding,
@@ -25437,7 +25446,7 @@ var ConvLSTM2DCell = class extends LSTMCell {
       dilationRate: this.dilationRate,
       strides: this.strides
     };
-    return { ...baseConfig, ...config };
+    return { ...baseConfig, ...config2 };
   }
   inputConv(x, w, b, padding) {
     const out = conv2d(x, w, this.strides, padding || "valid", this.dataFormat === "channelsFirst" ? "NCHW" : "NHWC", this.dilationRate);
@@ -25458,8 +25467,8 @@ var ConvLSTM2D = class extends ConvRNN2D {
     const cell = new ConvLSTM2DCell(args);
     super({ ...args, cell });
   }
-  static fromConfig(cls, config) {
-    return new cls(config);
+  static fromConfig(cls, config2) {
+    return new cls(config2);
   }
 };
 ConvLSTM2D.className = "ConvLSTM2D";
@@ -25497,14 +25506,14 @@ var Dropout = class extends Layer {
     });
   }
   getConfig() {
-    const config = {
+    const config2 = {
       rate: this.rate,
       noiseShape: this.noiseShape,
       seed: this.seed
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
   dispose() {
     return super.dispose();
@@ -25595,7 +25604,7 @@ var Dense = class extends Layer {
     });
   }
   getConfig() {
-    const config = {
+    const config2 = {
       units: this.units,
       activation: serializeActivation(this.activation),
       useBias: this.useBias,
@@ -25608,8 +25617,8 @@ var Dense = class extends Layer {
       biasConstraint: serializeConstraint(this.biasConstraint)
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 Dense.className = "Dense";
@@ -25646,13 +25655,13 @@ var Flatten = class extends Layer {
     });
   }
   getConfig() {
-    const config = {};
+    const config2 = {};
     if (this.dataFormat != null) {
-      config["dataFormat"] = this.dataFormat;
+      config2["dataFormat"] = this.dataFormat;
     }
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 Flatten.className = "Flatten";
@@ -25671,10 +25680,10 @@ var Activation5 = class extends Layer {
     });
   }
   getConfig() {
-    const config = { activation: serializeActivation(this.activation) };
+    const config2 = { activation: serializeActivation(this.activation) };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 Activation5.className = "Activation";
@@ -25695,12 +25704,12 @@ var RepeatVector = class extends Layer {
     });
   }
   getConfig() {
-    const config = {
+    const config2 = {
       n: this.n
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 RepeatVector.className = "RepeatVector";
@@ -25770,12 +25779,12 @@ var Reshape2 = class extends Layer {
     });
   }
   getConfig() {
-    const config = {
+    const config2 = {
       targetShape: this.targetShape
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 Reshape2.className = "Reshape";
@@ -25809,12 +25818,12 @@ var Permute = class extends Layer {
     return transpose(getExactlyOneTensor(inputs), this.dimsIncludingBatch);
   }
   getConfig() {
-    const config = {
+    const config2 = {
       dims: this.dims
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 Permute.className = "Permute";
@@ -25834,9 +25843,9 @@ var Masking = class extends Layer {
   }
   getConfig() {
     const baseConfig = super.getConfig();
-    const config = { maskValue: this.maskValue };
-    Object.assign(config, baseConfig);
-    return config;
+    const config2 = { maskValue: this.maskValue };
+    Object.assign(config2, baseConfig);
+    return config2;
   }
   computeMask(inputs, mask) {
     const input2 = getExactlyOneTensor(inputs);
@@ -25936,7 +25945,7 @@ var Embedding = class extends Layer {
     });
   }
   getConfig() {
-    const config = {
+    const config2 = {
       inputDim: this.inputDim,
       outputDim: this.outputDim,
       embeddingsInitializer: serializeInitializer(this.embeddingsInitializer),
@@ -25947,8 +25956,8 @@ var Embedding = class extends Layer {
       inputLength: this.inputLength
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 Embedding.className = "Embedding";
@@ -26313,12 +26322,12 @@ var Concatenate = class extends Merge {
     });
   }
   getConfig() {
-    const config = {
+    const config2 = {
       "axis": this.axis
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 Concatenate.className = "Concatenate";
@@ -26471,13 +26480,13 @@ var Dot = class extends Merge {
     return null;
   }
   getConfig() {
-    const config = {
+    const config2 = {
       "axes": this.axes,
       "normalize": this.normalize
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 Dot.className = "Dot";
@@ -26493,9 +26502,9 @@ var GaussianNoise = class extends Layer {
   }
   getConfig() {
     const baseConfig = super.getConfig();
-    const config = { stddev: this.stddev };
-    Object.assign(config, baseConfig);
-    return config;
+    const config2 = { stddev: this.stddev };
+    Object.assign(config2, baseConfig);
+    return config2;
   }
   call(inputs, kwargs) {
     return tidy(() => {
@@ -26520,9 +26529,9 @@ var GaussianDropout = class extends Layer {
   }
   getConfig() {
     const baseConfig = super.getConfig();
-    const config = { rate: this.rate };
-    Object.assign(config, baseConfig);
-    return config;
+    const config2 = { rate: this.rate };
+    Object.assign(config2, baseConfig);
+    return config2;
   }
   call(inputs, kwargs) {
     return tidy(() => {
@@ -26556,9 +26565,9 @@ var AlphaDropout = class extends Layer {
   }
   getConfig() {
     const baseConfig = super.getConfig();
-    const config = { rate: this.rate };
-    Object.assign(config, baseConfig);
-    return config;
+    const config2 = { rate: this.rate };
+    Object.assign(config2, baseConfig);
+    return config2;
   }
   call(inputs, kwargs) {
     return tidy(() => {
@@ -26720,7 +26729,7 @@ var BatchNormalization = class extends Layer {
     });
   }
   getConfig() {
-    const config = {
+    const config2 = {
       axis: this.axis,
       momentum: this.momentum,
       epsilon: this.epsilon,
@@ -26736,8 +26745,8 @@ var BatchNormalization = class extends Layer {
       gammaConstraint: serializeConstraint(this.gammaConstraint)
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 BatchNormalization.className = "BatchNormalization";
@@ -26847,7 +26856,7 @@ var LayerNormalization = class extends Layer {
     });
   }
   getConfig() {
-    const config = {
+    const config2 = {
       axis: this.axis,
       epsilon: this.epsilon,
       center: this.center,
@@ -26858,8 +26867,8 @@ var LayerNormalization = class extends Layer {
       gammaRegularizer: serializeRegularizer(this.gammaRegularizer)
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 LayerNormalization.className = "LayerNormalization";
@@ -26960,13 +26969,13 @@ var ZeroPadding2D = class extends Layer {
     return tidy(() => spatial2dPadding(getExactlyOneTensor(inputs), this.padding, this.dataFormat));
   }
   getConfig() {
-    const config = {
+    const config2 = {
       padding: this.padding,
       dataFormat: this.dataFormat
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 ZeroPadding2D.className = "ZeroPadding2D";
@@ -27077,14 +27086,14 @@ var Pooling1D = class extends Layer {
     });
   }
   getConfig() {
-    const config = {
+    const config2 = {
       poolSize: this.poolSize,
       padding: this.padding,
       strides: this.strides
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 var MaxPooling1D = class extends Pooling1D {
@@ -27155,15 +27164,15 @@ var Pooling2D = class extends Layer {
     });
   }
   getConfig() {
-    const config = {
+    const config2 = {
       poolSize: this.poolSize,
       padding: this.padding,
       strides: this.strides,
       dataFormat: this.dataFormat
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 var MaxPooling2D = class extends Pooling2D {
@@ -27236,15 +27245,15 @@ var Pooling3D = class extends Layer {
     });
   }
   getConfig() {
-    const config = {
+    const config2 = {
       poolSize: this.poolSize,
       padding: this.padding,
       strides: this.strides,
       dataFormat: this.dataFormat
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 var MaxPooling3D = class extends Pooling3D {
@@ -27328,10 +27337,10 @@ var GlobalPooling2D = class extends Layer {
     throw new NotImplementedError();
   }
   getConfig() {
-    const config = { dataFormat: this.dataFormat };
+    const config2 = { dataFormat: this.dataFormat };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
 };
 var GlobalAveragePooling2D = class extends GlobalPooling2D {
@@ -27401,15 +27410,15 @@ var Wrapper = class extends Layer {
     this.layer.setWeights(weights);
   }
   getConfig() {
-    const config = {
+    const config2 = {
       "layer": {
         "className": this.layer.getClassName(),
         "config": this.layer.getConfig()
       }
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
   setFastWeightInitDuringBuild(value) {
     super.setFastWeightInitDuringBuild(value);
@@ -27417,12 +27426,12 @@ var Wrapper = class extends Layer {
       this.layer.setFastWeightInitDuringBuild(value);
     }
   }
-  static fromConfig(cls, config, customObjects = {}) {
-    const layerConfig = config["layer"];
+  static fromConfig(cls, config2, customObjects = {}) {
+    const layerConfig = config2["layer"];
     const layer = deserialize(layerConfig, customObjects);
-    delete config["layer"];
+    delete config2["layer"];
     const newConfig = { layer };
-    Object.assign(newConfig, config);
+    Object.assign(newConfig, config2);
     return new cls(newConfig);
   }
 };
@@ -27709,20 +27718,20 @@ var Bidirectional = class extends Wrapper {
     }
   }
   getConfig() {
-    const config = {
+    const config2 = {
       "mergeMode": this.mergeMode
     };
     const baseConfig = super.getConfig();
-    Object.assign(config, baseConfig);
-    return config;
+    Object.assign(config2, baseConfig);
+    return config2;
   }
-  static fromConfig(cls, config) {
-    const rnnLayer = deserialize(config["layer"]);
-    delete config["layer"];
-    if (config["numConstants"] != null) {
+  static fromConfig(cls, config2) {
+    const rnnLayer = deserialize(config2["layer"]);
+    delete config2["layer"];
+    if (config2["numConstants"] != null) {
       throw new NotImplementedError(`Deserialization of a Bidirectional layer with numConstants present is not supported yet.`);
     }
-    const newConfig = config;
+    const newConfig = config2;
     newConfig["layer"] = rnnLayer;
     return new cls(newConfig);
   }
@@ -28007,14 +28016,14 @@ __export(exports_regularizers_exports, {
   l1l2: () => l1l2,
   l2: () => l22
 });
-function l1l2(config) {
-  return new L1L2(config);
+function l1l2(config2) {
+  return new L1L2(config2);
 }
-function l12(config) {
-  return l1(config);
+function l12(config2) {
+  return l1(config2);
 }
-function l22(config) {
-  return l2(config);
+function l22(config2) {
+  return l2(config2);
 }
 var ENV4 = env();
 ENV4.registerFlag("KEEP_INTERMEDIATE_TENSORS", () => false, (debugValue) => {
@@ -37443,7 +37452,7 @@ var GraphModel = class {
     }
     return true;
   }
-  async save(handlerOrURL, config) {
+  async save(handlerOrURL, config2) {
     if (typeof handlerOrURL === "string") {
       const handlers = this.io.getSaveHandlers(handlerOrURL);
       if (handlers.length === 0) {
@@ -37458,7 +37467,7 @@ var GraphModel = class {
     }
     return handlerOrURL.save(this.artifacts);
   }
-  predict(inputs, config) {
+  predict(inputs, config2) {
     const outputTensors = this.execute(inputs, this.outputNodes);
     if (this.structuredOutputKeys) {
       const outputTensorsArray = outputTensors instanceof Tensor ? [outputTensors] : outputTensors;
@@ -38641,16 +38650,16 @@ var CSVDataset = class extends Dataset {
     const labels = {};
     for (let i = 0; i < this.fullColumnNames.length; i++) {
       const key = this.fullColumnNames[i];
-      const config = this.columnConfigs ? this.columnConfigs[key] : null;
-      if (this.configuredColumnsOnly && !config) {
+      const config2 = this.columnConfigs ? this.columnConfigs[key] : null;
+      if (this.configuredColumnsOnly && !config2) {
         continue;
       } else {
         const value = values[i];
         let parsedValue = null;
         if (value === "") {
-          if (config && config.default !== void 0) {
-            parsedValue = config.default;
-          } else if (config && (config.required || config.isLabel)) {
+          if (config2 && config2.default !== void 0) {
+            parsedValue = config2.default;
+          } else if (config2 && (config2.required || config2.isLabel)) {
             throw new Error(`Required column ${key} is empty in this line: ${line}`);
           } else {
             parsedValue = void 0;
@@ -38658,15 +38667,15 @@ var CSVDataset = class extends Dataset {
         } else {
           const valueAsNum = Number(value);
           if (isNaN(valueAsNum)) {
-            if (config && config.dtype === "bool") {
+            if (config2 && config2.dtype === "bool") {
               parsedValue = this.getBoolean(value);
             } else {
               parsedValue = value;
             }
-          } else if (!config || !config.dtype) {
+          } else if (!config2 || !config2.dtype) {
             parsedValue = valueAsNum;
           } else {
-            switch (config.dtype) {
+            switch (config2.dtype) {
               case "float32":
                 parsedValue = valueAsNum;
                 break;
@@ -38681,7 +38690,7 @@ var CSVDataset = class extends Dataset {
             }
           }
         }
-        config && config.isLabel ? labels[key] = parsedValue : features[key] = parsedValue;
+        config2 && config2.isLabel ? labels[key] = parsedValue : features[key] = parsedValue;
       }
     }
     if (Object.keys(labels).length === 0) {
@@ -45681,8 +45690,8 @@ var WEBGL_ATTRIBUTES = {
   stencil: false,
   failIfMajorPerformanceCaveat: true
 };
-function setWebGLContext(webGLVersion, gl) {
-  contexts[webGLVersion] = gl;
+function setWebGLContext(webGLVersion, gl2) {
+  contexts[webGLVersion] = gl2;
 }
 function getWebGLContext(webGLVersion, customCanvas) {
   if (!(webGLVersion in contexts) || customCanvas != null) {
@@ -45694,20 +45703,20 @@ function getWebGLContext(webGLVersion, customCanvas) {
       return null;
     }
   }
-  const gl = contexts[webGLVersion];
-  if (gl == null || gl.isContextLost()) {
+  const gl2 = contexts[webGLVersion];
+  if (gl2 == null || gl2.isContextLost()) {
     delete contexts[webGLVersion];
     return getWebGLContext(webGLVersion);
   }
-  gl.disable(gl.DEPTH_TEST);
-  gl.disable(gl.STENCIL_TEST);
-  gl.disable(gl.BLEND);
-  gl.disable(gl.DITHER);
-  gl.disable(gl.POLYGON_OFFSET_FILL);
-  gl.disable(gl.SAMPLE_COVERAGE);
-  gl.enable(gl.SCISSOR_TEST);
-  gl.enable(gl.CULL_FACE);
-  gl.cullFace(gl.BACK);
+  gl2.disable(gl2.DEPTH_TEST);
+  gl2.disable(gl2.STENCIL_TEST);
+  gl2.disable(gl2.BLEND);
+  gl2.disable(gl2.DITHER);
+  gl2.disable(gl2.POLYGON_OFFSET_FILL);
+  gl2.disable(gl2.SAMPLE_COVERAGE);
+  gl2.enable(gl2.SCISSOR_TEST);
+  gl2.enable(gl2.CULL_FACE);
+  gl2.cullFace(gl2.BACK);
   return contexts[webGLVersion];
 }
 function createCanvas(webGLVersion) {
@@ -45754,8 +45763,8 @@ function getPackedRGBAArraySizeFromMatrixShape(rows, columns) {
   const [w, h] = getPackedMatrixTextureShapeWidthHeight(rows, columns);
   return w * h * 4;
 }
-function getTextureConfig(gl, textureHalfFloatExtension) {
-  const glany = gl;
+function getTextureConfig(gl2, textureHalfFloatExtension) {
+  const glany = gl2;
   let internalFormatFloat;
   let internalFormatHalfFloat;
   let internalFormatPackedHalfFloat;
@@ -45778,16 +45787,16 @@ function getTextureConfig(gl, textureHalfFloatExtension) {
     textureTypeFloat = glany.FLOAT;
     downloadTextureFormat = glany.RGBA8;
   } else {
-    internalFormatFloat = gl.RGBA;
-    internalFormatHalfFloat = gl.RGBA;
-    internalFormatPackedHalfFloat = gl.RGBA;
+    internalFormatFloat = gl2.RGBA;
+    internalFormatHalfFloat = gl2.RGBA;
+    internalFormatPackedHalfFloat = gl2.RGBA;
     internalFormatPackedFloat = glany.RGBA;
-    textureFormatFloat = gl.RGBA;
+    textureFormatFloat = gl2.RGBA;
     downloadUnpackNumChannels = 4;
     defaultNumChannels = 4;
     textureTypeHalfFloat = textureHalfFloatExtension != null ? textureHalfFloatExtension.HALF_FLOAT_OES : null;
-    textureTypeFloat = gl.FLOAT;
-    downloadTextureFormat = gl.RGBA;
+    textureTypeFloat = gl2.FLOAT;
+    downloadTextureFormat = gl2.RGBA;
   }
   return {
     internalFormatFloat,
@@ -45802,17 +45811,17 @@ function getTextureConfig(gl, textureHalfFloatExtension) {
     textureTypeFloat
   };
 }
-function callAndCheck(gl, func2) {
+function callAndCheck(gl2, func2) {
   const returnValue = func2();
   if (env().getBool("DEBUG")) {
-    checkWebGLError(gl);
+    checkWebGLError(gl2);
   }
   return returnValue;
 }
-function checkWebGLError(gl) {
-  const error = gl.getError();
-  if (error !== gl.NO_ERROR) {
-    throw new Error("WebGL Error: " + getWebGLErrorMessage(gl, error));
+function checkWebGLError(gl2) {
+  const error = gl2.getError();
+  if (error !== gl2.NO_ERROR) {
+    throw new Error("WebGL Error: " + getWebGLErrorMessage(gl2, error));
   }
 }
 var MIN_FLOAT16 = 596e-10;
@@ -45823,48 +45832,48 @@ function canBeRepresented(num) {
   }
   return false;
 }
-function getWebGLErrorMessage(gl, status) {
+function getWebGLErrorMessage(gl2, status) {
   switch (status) {
-    case gl.NO_ERROR:
+    case gl2.NO_ERROR:
       return "NO_ERROR";
-    case gl.INVALID_ENUM:
+    case gl2.INVALID_ENUM:
       return "INVALID_ENUM";
-    case gl.INVALID_VALUE:
+    case gl2.INVALID_VALUE:
       return "INVALID_VALUE";
-    case gl.INVALID_OPERATION:
+    case gl2.INVALID_OPERATION:
       return "INVALID_OPERATION";
-    case gl.INVALID_FRAMEBUFFER_OPERATION:
+    case gl2.INVALID_FRAMEBUFFER_OPERATION:
       return "INVALID_FRAMEBUFFER_OPERATION";
-    case gl.OUT_OF_MEMORY:
+    case gl2.OUT_OF_MEMORY:
       return "OUT_OF_MEMORY";
-    case gl.CONTEXT_LOST_WEBGL:
+    case gl2.CONTEXT_LOST_WEBGL:
       return "CONTEXT_LOST_WEBGL";
     default:
       return `Unknown error code ${status}`;
   }
 }
-function getExtensionOrThrow(gl, extensionName) {
-  return throwIfNull(gl, () => gl.getExtension(extensionName), 'Extension "' + extensionName + '" not supported on this browser.');
+function getExtensionOrThrow(gl2, extensionName) {
+  return throwIfNull(gl2, () => gl2.getExtension(extensionName), 'Extension "' + extensionName + '" not supported on this browser.');
 }
-function createVertexShader(gl, vertexShaderSource) {
-  const vertexShader = throwIfNull(gl, () => gl.createShader(gl.VERTEX_SHADER), "Unable to create vertex WebGLShader.");
-  callAndCheck(gl, () => gl.shaderSource(vertexShader, vertexShaderSource));
-  callAndCheck(gl, () => gl.compileShader(vertexShader));
-  if (gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS) === false) {
-    console.log(gl.getShaderInfoLog(vertexShader));
+function createVertexShader(gl2, vertexShaderSource) {
+  const vertexShader = throwIfNull(gl2, () => gl2.createShader(gl2.VERTEX_SHADER), "Unable to create vertex WebGLShader.");
+  callAndCheck(gl2, () => gl2.shaderSource(vertexShader, vertexShaderSource));
+  callAndCheck(gl2, () => gl2.compileShader(vertexShader));
+  if (gl2.getShaderParameter(vertexShader, gl2.COMPILE_STATUS) === false) {
+    console.log(gl2.getShaderInfoLog(vertexShader));
     throw new Error("Failed to compile vertex shader.");
   }
   return vertexShader;
 }
-function createFragmentShader(gl, fragmentShaderSource) {
-  const fragmentShader = throwIfNull(gl, () => gl.createShader(gl.FRAGMENT_SHADER), "Unable to create fragment WebGLShader.");
-  callAndCheck(gl, () => gl.shaderSource(fragmentShader, fragmentShaderSource));
-  callAndCheck(gl, () => gl.compileShader(fragmentShader));
+function createFragmentShader(gl2, fragmentShaderSource) {
+  const fragmentShader = throwIfNull(gl2, () => gl2.createShader(gl2.FRAGMENT_SHADER), "Unable to create fragment WebGLShader.");
+  callAndCheck(gl2, () => gl2.shaderSource(fragmentShader, fragmentShaderSource));
+  callAndCheck(gl2, () => gl2.compileShader(fragmentShader));
   if (env().get("ENGINE_COMPILE_ONLY")) {
     return fragmentShader;
   }
-  if (gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS) === false) {
-    logShaderSourceAndInfoLog(fragmentShaderSource, gl.getShaderInfoLog(fragmentShader));
+  if (gl2.getShaderParameter(fragmentShader, gl2.COMPILE_STATUS) === false) {
+    logShaderSourceAndInfoLog(fragmentShaderSource, gl2.getShaderInfoLog(fragmentShader));
     throw new Error("Failed to compile fragment shader.");
   }
   return fragmentShader;
@@ -45893,36 +45902,36 @@ function logShaderSourceAndInfoLog(shaderSource, shaderInfoLog) {
   console.log(`%c ${util_exports.rightPad(errorLine[0], maxLineLength)}`, "border:1px solid red; background-color:#e3d2d2; color:#a61717");
   console.log(afterErrorLines.join("\n"));
 }
-function createProgram(gl) {
-  return throwIfNull(gl, () => gl.createProgram(), "Unable to create WebGLProgram.");
+function createProgram(gl2) {
+  return throwIfNull(gl2, () => gl2.createProgram(), "Unable to create WebGLProgram.");
 }
-function linkProgram(gl, program) {
-  callAndCheck(gl, () => gl.linkProgram(program));
+function linkProgram(gl2, program) {
+  callAndCheck(gl2, () => gl2.linkProgram(program));
   if (env().get("ENGINE_COMPILE_ONLY")) {
     return;
   }
-  if (gl.getProgramParameter(program, gl.LINK_STATUS) === false) {
-    console.log(gl.getProgramInfoLog(program));
+  if (gl2.getProgramParameter(program, gl2.LINK_STATUS) === false) {
+    console.log(gl2.getProgramInfoLog(program));
     throw new Error("Failed to link vertex and fragment shaders.");
   }
 }
-function validateProgram(gl, program) {
-  callAndCheck(gl, () => gl.validateProgram(program));
-  if (gl.getProgramParameter(program, gl.VALIDATE_STATUS) === false) {
-    console.log(gl.getProgramInfoLog(program));
+function validateProgram(gl2, program) {
+  callAndCheck(gl2, () => gl2.validateProgram(program));
+  if (gl2.getProgramParameter(program, gl2.VALIDATE_STATUS) === false) {
+    console.log(gl2.getProgramInfoLog(program));
     throw new Error("Shader program validation failed.");
   }
 }
-function createStaticVertexBuffer(gl, data) {
-  const buffer2 = throwIfNull(gl, () => gl.createBuffer(), "Unable to create WebGLBuffer");
-  callAndCheck(gl, () => gl.bindBuffer(gl.ARRAY_BUFFER, buffer2));
-  callAndCheck(gl, () => gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW));
+function createStaticVertexBuffer(gl2, data) {
+  const buffer2 = throwIfNull(gl2, () => gl2.createBuffer(), "Unable to create WebGLBuffer");
+  callAndCheck(gl2, () => gl2.bindBuffer(gl2.ARRAY_BUFFER, buffer2));
+  callAndCheck(gl2, () => gl2.bufferData(gl2.ARRAY_BUFFER, data, gl2.STATIC_DRAW));
   return buffer2;
 }
-function createStaticIndexBuffer(gl, data) {
-  const buffer2 = throwIfNull(gl, () => gl.createBuffer(), "Unable to create WebGLBuffer");
-  callAndCheck(gl, () => gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer2));
-  callAndCheck(gl, () => gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW));
+function createStaticIndexBuffer(gl2, data) {
+  const buffer2 = throwIfNull(gl2, () => gl2.createBuffer(), "Unable to create WebGLBuffer");
+  callAndCheck(gl2, () => gl2.bindBuffer(gl2.ELEMENT_ARRAY_BUFFER, buffer2));
+  callAndCheck(gl2, () => gl2.bufferData(gl2.ELEMENT_ARRAY_BUFFER, data, gl2.STATIC_DRAW));
   return buffer2;
 }
 function getNumChannels() {
@@ -45931,8 +45940,8 @@ function getNumChannels() {
   }
   return 4;
 }
-function createTexture(gl) {
-  return throwIfNull(gl, () => gl.createTexture(), "Unable to create WebGLTexture.");
+function createTexture(gl2) {
+  return throwIfNull(gl2, () => gl2.createTexture(), "Unable to create WebGLTexture.");
 }
 function validateTextureSize(width, height) {
   const maxTextureSize = env().getNumber("WEBGL_MAX_TEXTURE_SIZE");
@@ -45946,83 +45955,83 @@ function validateTextureSize(width, height) {
     throw new Error("Requested texture size " + requested + " greater than WebGL maximum on this browser / GPU " + max7 + ".");
   }
 }
-function createFramebuffer(gl) {
-  return throwIfNull(gl, () => gl.createFramebuffer(), "Unable to create WebGLFramebuffer.");
+function createFramebuffer(gl2) {
+  return throwIfNull(gl2, () => gl2.createFramebuffer(), "Unable to create WebGLFramebuffer.");
 }
-function bindVertexBufferToProgramAttribute(gl, program, attribute, buffer2, arrayEntriesPerItem, itemStrideInBytes, itemOffsetInBytes) {
-  const loc = gl.getAttribLocation(program, attribute);
+function bindVertexBufferToProgramAttribute(gl2, program, attribute, buffer2, arrayEntriesPerItem, itemStrideInBytes, itemOffsetInBytes) {
+  const loc = gl2.getAttribLocation(program, attribute);
   if (loc === -1) {
     return false;
   }
-  callAndCheck(gl, () => gl.bindBuffer(gl.ARRAY_BUFFER, buffer2));
-  callAndCheck(gl, () => gl.vertexAttribPointer(loc, arrayEntriesPerItem, gl.FLOAT, false, itemStrideInBytes, itemOffsetInBytes));
-  callAndCheck(gl, () => gl.enableVertexAttribArray(loc));
+  callAndCheck(gl2, () => gl2.bindBuffer(gl2.ARRAY_BUFFER, buffer2));
+  callAndCheck(gl2, () => gl2.vertexAttribPointer(loc, arrayEntriesPerItem, gl2.FLOAT, false, itemStrideInBytes, itemOffsetInBytes));
+  callAndCheck(gl2, () => gl2.enableVertexAttribArray(loc));
   return true;
 }
-function bindTextureUnit(gl, texture, textureUnit) {
-  validateTextureUnit(gl, textureUnit);
-  callAndCheck(gl, () => gl.activeTexture(gl.TEXTURE0 + textureUnit));
-  callAndCheck(gl, () => gl.bindTexture(gl.TEXTURE_2D, texture));
+function bindTextureUnit(gl2, texture, textureUnit) {
+  validateTextureUnit(gl2, textureUnit);
+  callAndCheck(gl2, () => gl2.activeTexture(gl2.TEXTURE0 + textureUnit));
+  callAndCheck(gl2, () => gl2.bindTexture(gl2.TEXTURE_2D, texture));
 }
-function unbindTextureUnit(gl, textureUnit) {
-  validateTextureUnit(gl, textureUnit);
-  callAndCheck(gl, () => gl.activeTexture(gl.TEXTURE0 + textureUnit));
-  callAndCheck(gl, () => gl.bindTexture(gl.TEXTURE_2D, null));
+function unbindTextureUnit(gl2, textureUnit) {
+  validateTextureUnit(gl2, textureUnit);
+  callAndCheck(gl2, () => gl2.activeTexture(gl2.TEXTURE0 + textureUnit));
+  callAndCheck(gl2, () => gl2.bindTexture(gl2.TEXTURE_2D, null));
 }
-function getProgramUniformLocationOrThrow(gl, program, uniformName) {
-  return throwIfNull(gl, () => gl.getUniformLocation(program, uniformName), 'uniform "' + uniformName + '" not present in program.');
+function getProgramUniformLocationOrThrow(gl2, program, uniformName) {
+  return throwIfNull(gl2, () => gl2.getUniformLocation(program, uniformName), 'uniform "' + uniformName + '" not present in program.');
 }
-function getProgramUniformLocation(gl, program, uniformName) {
-  return gl.getUniformLocation(program, uniformName);
+function getProgramUniformLocation(gl2, program, uniformName) {
+  return gl2.getUniformLocation(program, uniformName);
 }
-function bindTextureToProgramUniformSampler(gl, texture, uniformSamplerLocation, textureUnit) {
-  callAndCheck(gl, () => bindTextureUnit(gl, texture, textureUnit));
-  callAndCheck(gl, () => gl.uniform1i(uniformSamplerLocation, textureUnit));
+function bindTextureToProgramUniformSampler(gl2, texture, uniformSamplerLocation, textureUnit) {
+  callAndCheck(gl2, () => bindTextureUnit(gl2, texture, textureUnit));
+  callAndCheck(gl2, () => gl2.uniform1i(uniformSamplerLocation, textureUnit));
 }
-function bindCanvasToFramebuffer(gl) {
-  callAndCheck(gl, () => gl.bindFramebuffer(gl.FRAMEBUFFER, null));
-  callAndCheck(gl, () => gl.viewport(0, 0, gl.canvas.width, gl.canvas.height));
-  callAndCheck(gl, () => gl.scissor(0, 0, gl.canvas.width, gl.canvas.height));
+function bindCanvasToFramebuffer(gl2) {
+  callAndCheck(gl2, () => gl2.bindFramebuffer(gl2.FRAMEBUFFER, null));
+  callAndCheck(gl2, () => gl2.viewport(0, 0, gl2.canvas.width, gl2.canvas.height));
+  callAndCheck(gl2, () => gl2.scissor(0, 0, gl2.canvas.width, gl2.canvas.height));
 }
-function bindColorTextureToFramebuffer(gl, texture, framebuffer) {
-  callAndCheck(gl, () => gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer));
-  callAndCheck(gl, () => gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0));
+function bindColorTextureToFramebuffer(gl2, texture, framebuffer) {
+  callAndCheck(gl2, () => gl2.bindFramebuffer(gl2.FRAMEBUFFER, framebuffer));
+  callAndCheck(gl2, () => gl2.framebufferTexture2D(gl2.FRAMEBUFFER, gl2.COLOR_ATTACHMENT0, gl2.TEXTURE_2D, texture, 0));
 }
-function unbindColorTextureFromFramebuffer(gl, framebuffer) {
-  callAndCheck(gl, () => gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer));
-  callAndCheck(gl, () => gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, null, 0));
+function unbindColorTextureFromFramebuffer(gl2, framebuffer) {
+  callAndCheck(gl2, () => gl2.bindFramebuffer(gl2.FRAMEBUFFER, framebuffer));
+  callAndCheck(gl2, () => gl2.framebufferTexture2D(gl2.FRAMEBUFFER, gl2.COLOR_ATTACHMENT0, gl2.TEXTURE_2D, null, 0));
 }
-function validateFramebuffer(gl) {
-  const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-  if (status !== gl.FRAMEBUFFER_COMPLETE) {
-    throw new Error("Error binding framebuffer: " + getFramebufferErrorMessage(gl, status));
+function validateFramebuffer(gl2) {
+  const status = gl2.checkFramebufferStatus(gl2.FRAMEBUFFER);
+  if (status !== gl2.FRAMEBUFFER_COMPLETE) {
+    throw new Error("Error binding framebuffer: " + getFramebufferErrorMessage(gl2, status));
   }
 }
-function getFramebufferErrorMessage(gl, status) {
+function getFramebufferErrorMessage(gl2, status) {
   switch (status) {
-    case gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+    case gl2.FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
       return "FRAMEBUFFER_INCOMPLETE_ATTACHMENT";
-    case gl.FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+    case gl2.FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
       return "FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT";
-    case gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
+    case gl2.FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
       return "FRAMEBUFFER_INCOMPLETE_DIMENSIONS";
-    case gl.FRAMEBUFFER_UNSUPPORTED:
+    case gl2.FRAMEBUFFER_UNSUPPORTED:
       return "FRAMEBUFFER_UNSUPPORTED";
     default:
       return `unknown error ${status}`;
   }
 }
-function throwIfNull(gl, returnTOrNull, failureMessage) {
-  const tOrNull = callAndCheck(gl, () => returnTOrNull());
+function throwIfNull(gl2, returnTOrNull, failureMessage) {
+  const tOrNull = callAndCheck(gl2, () => returnTOrNull());
   if (tOrNull == null) {
     throw new Error(failureMessage);
   }
   return tOrNull;
 }
-function validateTextureUnit(gl, textureUnit) {
-  const maxTextureUnit = gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1;
-  const glTextureUnit = textureUnit + gl.TEXTURE0;
-  if (glTextureUnit < gl.TEXTURE0 || glTextureUnit > maxTextureUnit) {
+function validateTextureUnit(gl2, textureUnit) {
+  const maxTextureUnit = gl2.MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1;
+  const glTextureUnit = textureUnit + gl2.TEXTURE0;
+  if (glTextureUnit < gl2.TEXTURE0 || glTextureUnit > maxTextureUnit) {
     const textureUnitRange = `[gl.TEXTURE0, gl.TEXTURE${maxTextureUnit}]`;
     throw new Error(`textureUnit must be in ${textureUnitRange}.`);
   }
@@ -46117,8 +46126,8 @@ var MAX_TEXTURE_SIZE;
 var MAX_TEXTURES_IN_SHADER;
 function getWebGLMaxTextureSize(webGLVersion) {
   if (MAX_TEXTURE_SIZE == null) {
-    const gl = getWebGLContext(webGLVersion);
-    MAX_TEXTURE_SIZE = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+    const gl2 = getWebGLContext(webGLVersion);
+    MAX_TEXTURE_SIZE = gl2.getParameter(gl2.MAX_TEXTURE_SIZE);
   }
   return MAX_TEXTURE_SIZE;
 }
@@ -46130,8 +46139,8 @@ function resetMaxTexturesInShader() {
 }
 function getMaxTexturesInShader(webGLVersion) {
   if (MAX_TEXTURES_IN_SHADER == null) {
-    const gl = getWebGLContext(webGLVersion);
-    MAX_TEXTURES_IN_SHADER = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+    const gl2 = getWebGLContext(webGLVersion);
+    MAX_TEXTURES_IN_SHADER = gl2.getParameter(gl2.MAX_TEXTURE_IMAGE_UNITS);
   }
   return Math.min(16, MAX_TEXTURES_IN_SHADER);
 }
@@ -46140,24 +46149,24 @@ function getWebGLDisjointQueryTimerVersion(webGLVersion) {
     return 0;
   }
   let queryTimerVersion;
-  const gl = getWebGLContext(webGLVersion);
-  if (hasExtension(gl, "EXT_disjoint_timer_query_webgl2") && webGLVersion === 2) {
+  const gl2 = getWebGLContext(webGLVersion);
+  if (hasExtension(gl2, "EXT_disjoint_timer_query_webgl2") && webGLVersion === 2) {
     queryTimerVersion = 2;
-  } else if (hasExtension(gl, "EXT_disjoint_timer_query")) {
+  } else if (hasExtension(gl2, "EXT_disjoint_timer_query")) {
     queryTimerVersion = 1;
   } else {
     queryTimerVersion = 0;
   }
   return queryTimerVersion;
 }
-function hasExtension(gl, extensionName) {
-  const ext = gl.getExtension(extensionName);
+function hasExtension(gl2, extensionName) {
+  const ext = gl2.getExtension(extensionName);
   return ext != null;
 }
 function isWebGLVersionEnabled(webGLVersion) {
   try {
-    const gl = getWebGLContext(webGLVersion);
-    if (gl != null) {
+    const gl2 = getWebGLContext(webGLVersion);
+    if (gl2 != null) {
       return true;
     }
   } catch (e) {
@@ -46170,85 +46179,85 @@ function isCapableOfRenderingToFloatTexture(webGLVersion) {
   if (webGLVersion === 0) {
     return false;
   }
-  const gl = getWebGLContext(webGLVersion);
+  const gl2 = getWebGLContext(webGLVersion);
   if (webGLVersion === 1) {
-    if (!hasExtension(gl, "OES_texture_float")) {
+    if (!hasExtension(gl2, "OES_texture_float")) {
       return false;
     }
   } else {
-    if (!hasExtension(gl, "EXT_color_buffer_float")) {
+    if (!hasExtension(gl2, "EXT_color_buffer_float")) {
       return false;
     }
   }
-  const isFrameBufferComplete = createFloatTextureAndBindToFramebuffer(gl);
+  const isFrameBufferComplete = createFloatTextureAndBindToFramebuffer(gl2);
   return isFrameBufferComplete;
 }
 function isDownloadFloatTextureEnabled(webGLVersion) {
   if (webGLVersion === 0) {
     return false;
   }
-  const gl = getWebGLContext(webGLVersion);
+  const gl2 = getWebGLContext(webGLVersion);
   if (webGLVersion === 1) {
-    if (!hasExtension(gl, "OES_texture_float")) {
+    if (!hasExtension(gl2, "OES_texture_float")) {
       return false;
     }
-    if (!hasExtension(gl, "WEBGL_color_buffer_float")) {
+    if (!hasExtension(gl2, "WEBGL_color_buffer_float")) {
       return false;
     }
   } else {
-    if (hasExtension(gl, "EXT_color_buffer_float")) {
-      return createFloatTextureAndBindToFramebuffer(gl);
+    if (hasExtension(gl2, "EXT_color_buffer_float")) {
+      return createFloatTextureAndBindToFramebuffer(gl2);
     }
     const COLOR_BUFFER_HALF_FLOAT = "EXT_color_buffer_half_float";
-    if (hasExtension(gl, COLOR_BUFFER_HALF_FLOAT)) {
-      const textureHalfFloatExtension = gl.getExtension(COLOR_BUFFER_HALF_FLOAT);
-      return createHalfFloatTextureAndBindToFramebuffer(gl, textureHalfFloatExtension);
+    if (hasExtension(gl2, COLOR_BUFFER_HALF_FLOAT)) {
+      const textureHalfFloatExtension = gl2.getExtension(COLOR_BUFFER_HALF_FLOAT);
+      return createHalfFloatTextureAndBindToFramebuffer(gl2, textureHalfFloatExtension);
     }
     return false;
   }
-  const isFrameBufferComplete = createFloatTextureAndBindToFramebuffer(gl);
+  const isFrameBufferComplete = createFloatTextureAndBindToFramebuffer(gl2);
   return isFrameBufferComplete;
 }
-function createFloatTextureAndBindToFramebuffer(gl) {
-  const texConfig = getTextureConfig(gl);
-  const texture = gl.createTexture();
-  gl.bindTexture(gl.TEXTURE_2D, texture);
+function createFloatTextureAndBindToFramebuffer(gl2) {
+  const texConfig = getTextureConfig(gl2);
+  const texture = gl2.createTexture();
+  gl2.bindTexture(gl2.TEXTURE_2D, texture);
   const width = 1;
   const height = 1;
-  gl.texImage2D(gl.TEXTURE_2D, 0, texConfig.internalFormatFloat, width, height, 0, texConfig.textureFormatFloat, texConfig.textureTypeFloat, null);
-  const frameBuffer = gl.createFramebuffer();
-  gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
-  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-  const isFrameBufferComplete = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
-  gl.bindTexture(gl.TEXTURE_2D, null);
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-  gl.deleteTexture(texture);
-  gl.deleteFramebuffer(frameBuffer);
+  gl2.texImage2D(gl2.TEXTURE_2D, 0, texConfig.internalFormatFloat, width, height, 0, texConfig.textureFormatFloat, texConfig.textureTypeFloat, null);
+  const frameBuffer = gl2.createFramebuffer();
+  gl2.bindFramebuffer(gl2.FRAMEBUFFER, frameBuffer);
+  gl2.framebufferTexture2D(gl2.FRAMEBUFFER, gl2.COLOR_ATTACHMENT0, gl2.TEXTURE_2D, texture, 0);
+  const isFrameBufferComplete = gl2.checkFramebufferStatus(gl2.FRAMEBUFFER) === gl2.FRAMEBUFFER_COMPLETE;
+  gl2.bindTexture(gl2.TEXTURE_2D, null);
+  gl2.bindFramebuffer(gl2.FRAMEBUFFER, null);
+  gl2.deleteTexture(texture);
+  gl2.deleteFramebuffer(frameBuffer);
   return isFrameBufferComplete;
 }
-function createHalfFloatTextureAndBindToFramebuffer(gl, textureHalfFloatExtension) {
-  const texConfig = getTextureConfig(gl, textureHalfFloatExtension);
-  const texture = gl.createTexture();
-  gl.bindTexture(gl.TEXTURE_2D, texture);
+function createHalfFloatTextureAndBindToFramebuffer(gl2, textureHalfFloatExtension) {
+  const texConfig = getTextureConfig(gl2, textureHalfFloatExtension);
+  const texture = gl2.createTexture();
+  gl2.bindTexture(gl2.TEXTURE_2D, texture);
   const width = 1;
   const height = 1;
-  gl.texImage2D(gl.TEXTURE_2D, 0, texConfig.internalFormatHalfFloat, width, height, 0, texConfig.textureFormatFloat, texConfig.textureTypeHalfFloat, null);
-  const frameBuffer = gl.createFramebuffer();
-  gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
-  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-  const isFrameBufferComplete = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
-  gl.bindTexture(gl.TEXTURE_2D, null);
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-  gl.deleteTexture(texture);
-  gl.deleteFramebuffer(frameBuffer);
+  gl2.texImage2D(gl2.TEXTURE_2D, 0, texConfig.internalFormatHalfFloat, width, height, 0, texConfig.textureFormatFloat, texConfig.textureTypeHalfFloat, null);
+  const frameBuffer = gl2.createFramebuffer();
+  gl2.bindFramebuffer(gl2.FRAMEBUFFER, frameBuffer);
+  gl2.framebufferTexture2D(gl2.FRAMEBUFFER, gl2.COLOR_ATTACHMENT0, gl2.TEXTURE_2D, texture, 0);
+  const isFrameBufferComplete = gl2.checkFramebufferStatus(gl2.FRAMEBUFFER) === gl2.FRAMEBUFFER_COMPLETE;
+  gl2.bindTexture(gl2.TEXTURE_2D, null);
+  gl2.bindFramebuffer(gl2.FRAMEBUFFER, null);
+  gl2.deleteTexture(texture);
+  gl2.deleteFramebuffer(frameBuffer);
   return isFrameBufferComplete;
 }
 function isWebGLFenceEnabled(webGLVersion) {
   if (webGLVersion !== 2) {
     return false;
   }
-  const gl = getWebGLContext(webGLVersion);
-  const isEnabled = gl.fenceSync != null;
+  const gl2 = getWebGLContext(webGLVersion);
+  const isEnabled = gl2.fenceSync != null;
   return isEnabled;
 }
 function assertNotComplex2(tensor2, opName) {
@@ -48623,7 +48632,7 @@ __export(gpgpu_util_exports, {
   uploadDenseMatrixToTexture: () => uploadDenseMatrixToTexture,
   uploadPixelDataToTexture: () => uploadPixelDataToTexture
 });
-function createVertexShader2(gl) {
+function createVertexShader2(gl2) {
   const glsl = getGlslDifferences();
   const vertexShaderSource = `${glsl.version}
     precision highp float;
@@ -48635,112 +48644,112 @@ function createVertexShader2(gl) {
       gl_Position = vec4(clipSpacePos, 1);
       resultUV = uv;
     }`;
-  return createVertexShader(gl, vertexShaderSource);
+  return createVertexShader(gl2, vertexShaderSource);
 }
-function createVertexBuffer(gl) {
+function createVertexBuffer(gl2) {
   const vertexArray = new Float32Array([-1, 1, 0, 0, 1, -1, -1, 0, 0, 0, 1, 1, 0, 1, 1, 1, -1, 0, 1, 0]);
-  return createStaticVertexBuffer(gl, vertexArray);
+  return createStaticVertexBuffer(gl2, vertexArray);
 }
-function createIndexBuffer(gl) {
+function createIndexBuffer(gl2) {
   const triangleVertexIndices = new Uint16Array([0, 1, 2, 2, 1, 3]);
-  return createStaticIndexBuffer(gl, triangleVertexIndices);
+  return createStaticIndexBuffer(gl2, triangleVertexIndices);
 }
-function createAndConfigureTexture(gl, width, height, internalFormat, textureFormat, textureType) {
+function createAndConfigureTexture(gl2, width, height, internalFormat, textureFormat, textureType) {
   validateTextureSize(width, height);
-  const texture = createTexture(gl);
-  const tex2d = gl.TEXTURE_2D;
-  callAndCheck(gl, () => gl.bindTexture(tex2d, texture));
-  callAndCheck(gl, () => gl.texParameteri(tex2d, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE));
-  callAndCheck(gl, () => gl.texParameteri(tex2d, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE));
-  callAndCheck(gl, () => gl.texParameteri(tex2d, gl.TEXTURE_MIN_FILTER, gl.NEAREST));
-  callAndCheck(gl, () => gl.texParameteri(tex2d, gl.TEXTURE_MAG_FILTER, gl.NEAREST));
+  const texture = createTexture(gl2);
+  const tex2d = gl2.TEXTURE_2D;
+  callAndCheck(gl2, () => gl2.bindTexture(tex2d, texture));
+  callAndCheck(gl2, () => gl2.texParameteri(tex2d, gl2.TEXTURE_WRAP_S, gl2.CLAMP_TO_EDGE));
+  callAndCheck(gl2, () => gl2.texParameteri(tex2d, gl2.TEXTURE_WRAP_T, gl2.CLAMP_TO_EDGE));
+  callAndCheck(gl2, () => gl2.texParameteri(tex2d, gl2.TEXTURE_MIN_FILTER, gl2.NEAREST));
+  callAndCheck(gl2, () => gl2.texParameteri(tex2d, gl2.TEXTURE_MAG_FILTER, gl2.NEAREST));
   if (env().getNumber("WEBGL_VERSION") === 1) {
-    callAndCheck(gl, () => gl.texImage2D(tex2d, 0, internalFormat, width, height, 0, textureFormat, textureType, null));
+    callAndCheck(gl2, () => gl2.texImage2D(tex2d, 0, internalFormat, width, height, 0, textureFormat, textureType, null));
   } else {
-    callAndCheck(gl, () => gl.texStorage2D(tex2d, 1, internalFormat, width, height));
+    callAndCheck(gl2, () => gl2.texStorage2D(tex2d, 1, internalFormat, width, height));
   }
-  callAndCheck(gl, () => gl.bindTexture(gl.TEXTURE_2D, null));
+  callAndCheck(gl2, () => gl2.bindTexture(gl2.TEXTURE_2D, null));
   return { texture, texShape: [height, width] };
 }
 function getInternalFormatForFloat32MatrixTexture(textureConfig) {
   return textureConfig.internalFormatFloat;
 }
-function createFloat32MatrixTexture(gl, rows, columns, textureConfig) {
+function createFloat32MatrixTexture(gl2, rows, columns, textureConfig) {
   const [width, height] = getUnpackedMatrixTextureShapeWidthHeight(rows, columns);
-  return createAndConfigureTexture(gl, width, height, getInternalFormatForFloat32MatrixTexture(textureConfig), textureConfig.textureFormatFloat, gl.FLOAT);
+  return createAndConfigureTexture(gl2, width, height, getInternalFormatForFloat32MatrixTexture(textureConfig), textureConfig.textureFormatFloat, gl2.FLOAT);
 }
 function getInternalFormatForFloat16MatrixTexture(textureConfig) {
   return textureConfig.internalFormatHalfFloat;
 }
-function createFloat16MatrixTexture(gl, rows, columns, textureConfig) {
+function createFloat16MatrixTexture(gl2, rows, columns, textureConfig) {
   const [width, height] = getUnpackedMatrixTextureShapeWidthHeight(rows, columns);
-  return createAndConfigureTexture(gl, width, height, getInternalFormatForFloat16MatrixTexture(textureConfig), textureConfig.textureFormatFloat, textureConfig.textureTypeHalfFloat);
+  return createAndConfigureTexture(gl2, width, height, getInternalFormatForFloat16MatrixTexture(textureConfig), textureConfig.textureFormatFloat, textureConfig.textureTypeHalfFloat);
 }
 function getInternalFormatForUnsignedBytesMatrixTexture(textureConfig) {
   return textureConfig.downloadTextureFormat;
 }
-function createUnsignedBytesMatrixTexture(gl, rows, columns, textureConfig) {
+function createUnsignedBytesMatrixTexture(gl2, rows, columns, textureConfig) {
   const [width, height] = getUnpackedMatrixTextureShapeWidthHeight(rows, columns);
-  return createAndConfigureTexture(gl, width, height, getInternalFormatForUnsignedBytesMatrixTexture(textureConfig), gl.RGBA, gl.UNSIGNED_BYTE);
+  return createAndConfigureTexture(gl2, width, height, getInternalFormatForUnsignedBytesMatrixTexture(textureConfig), gl2.RGBA, gl2.UNSIGNED_BYTE);
 }
 function getInternalFormatForPackedMatrixTexture(textureConfig) {
   return textureConfig.internalFormatPackedFloat;
 }
-function createPackedMatrixTexture(gl, rows, columns, textureConfig) {
+function createPackedMatrixTexture(gl2, rows, columns, textureConfig) {
   const [width, height] = getPackedMatrixTextureShapeWidthHeight(rows, columns);
-  return createAndConfigureTexture(gl, width, height, getInternalFormatForPackedMatrixTexture(textureConfig), gl.RGBA, gl.FLOAT);
+  return createAndConfigureTexture(gl2, width, height, getInternalFormatForPackedMatrixTexture(textureConfig), gl2.RGBA, gl2.FLOAT);
 }
 function getInternalFormatForFloat16PackedMatrixTexture(textureConfig) {
   return textureConfig.internalFormatPackedHalfFloat;
 }
-function createFloat16PackedMatrixTexture(gl, rows, columns, textureConfig) {
+function createFloat16PackedMatrixTexture(gl2, rows, columns, textureConfig) {
   const [width, height] = getPackedMatrixTextureShapeWidthHeight(rows, columns);
-  return createAndConfigureTexture(gl, width, height, getInternalFormatForFloat16PackedMatrixTexture(textureConfig), gl.RGBA, textureConfig.textureTypeHalfFloat);
+  return createAndConfigureTexture(gl2, width, height, getInternalFormatForFloat16PackedMatrixTexture(textureConfig), gl2.RGBA, textureConfig.textureTypeHalfFloat);
 }
-function bindVertexProgramAttributeStreams(gl, program, vertexBuffer) {
+function bindVertexProgramAttributeStreams(gl2, program, vertexBuffer) {
   const posOffset = 0;
   const uvOffset = 3 * 4;
   const stride = 3 * 4 + 2 * 4;
-  callAndCheck(gl, () => gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer));
-  const success = bindVertexBufferToProgramAttribute(gl, program, "clipSpacePos", vertexBuffer, 3, stride, posOffset);
-  return success && bindVertexBufferToProgramAttribute(gl, program, "uv", vertexBuffer, 2, stride, uvOffset);
+  callAndCheck(gl2, () => gl2.bindBuffer(gl2.ARRAY_BUFFER, vertexBuffer));
+  const success = bindVertexBufferToProgramAttribute(gl2, program, "clipSpacePos", vertexBuffer, 3, stride, posOffset);
+  return success && bindVertexBufferToProgramAttribute(gl2, program, "uv", vertexBuffer, 2, stride, uvOffset);
 }
-function uploadDenseMatrixToTexture(gl, texture, width, height, data, textureConfig) {
-  callAndCheck(gl, () => gl.bindTexture(gl.TEXTURE_2D, texture));
+function uploadDenseMatrixToTexture(gl2, texture, width, height, data, textureConfig) {
+  callAndCheck(gl2, () => gl2.bindTexture(gl2.TEXTURE_2D, texture));
   let dataForUpload, texelDataType, internalFormat;
   if (data instanceof Uint8Array) {
     dataForUpload = new Uint8Array(width * height * 4);
-    texelDataType = gl.UNSIGNED_BYTE;
-    internalFormat = gl.RGBA;
+    texelDataType = gl2.UNSIGNED_BYTE;
+    internalFormat = gl2.RGBA;
   } else {
     dataForUpload = new Float32Array(width * height * 4);
-    texelDataType = gl.FLOAT;
+    texelDataType = gl2.FLOAT;
     internalFormat = textureConfig.internalFormatPackedFloat;
   }
   dataForUpload.set(data);
   if (env().getNumber("WEBGL_VERSION") === 2) {
-    callAndCheck(gl, () => gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height, gl.RGBA, texelDataType, dataForUpload));
+    callAndCheck(gl2, () => gl2.texSubImage2D(gl2.TEXTURE_2D, 0, 0, 0, width, height, gl2.RGBA, texelDataType, dataForUpload));
   } else {
-    callAndCheck(gl, () => gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, width, height, 0, gl.RGBA, texelDataType, dataForUpload));
+    callAndCheck(gl2, () => gl2.texImage2D(gl2.TEXTURE_2D, 0, internalFormat, width, height, 0, gl2.RGBA, texelDataType, dataForUpload));
   }
-  callAndCheck(gl, () => gl.bindTexture(gl.TEXTURE_2D, null));
+  callAndCheck(gl2, () => gl2.bindTexture(gl2.TEXTURE_2D, null));
 }
-function uploadPixelDataToTexture(gl, texture, pixels) {
-  callAndCheck(gl, () => gl.bindTexture(gl.TEXTURE_2D, texture));
+function uploadPixelDataToTexture(gl2, texture, pixels) {
+  callAndCheck(gl2, () => gl2.bindTexture(gl2.TEXTURE_2D, texture));
   if (pixels.data instanceof Uint8Array) {
     if (env().getNumber("WEBGL_VERSION") === 2) {
-      callAndCheck(gl, () => gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, pixels.width, pixels.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels.data));
+      callAndCheck(gl2, () => gl2.texSubImage2D(gl2.TEXTURE_2D, 0, 0, 0, pixels.width, pixels.height, gl2.RGBA, gl2.UNSIGNED_BYTE, pixels.data));
     } else {
-      callAndCheck(gl, () => gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, pixels.width, pixels.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixels.data));
+      callAndCheck(gl2, () => gl2.texImage2D(gl2.TEXTURE_2D, 0, gl2.RGBA, pixels.width, pixels.height, 0, gl2.RGBA, gl2.UNSIGNED_BYTE, pixels.data));
     }
   } else {
     if (env().getNumber("WEBGL_VERSION") === 2) {
-      callAndCheck(gl, () => gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixels));
+      callAndCheck(gl2, () => gl2.texSubImage2D(gl2.TEXTURE_2D, 0, 0, 0, gl2.RGBA, gl2.UNSIGNED_BYTE, pixels));
     } else {
-      callAndCheck(gl, () => gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, pixels));
+      callAndCheck(gl2, () => gl2.texImage2D(gl2.TEXTURE_2D, 0, gl2.RGBA, gl2.RGBA, gl2.UNSIGNED_BYTE, pixels));
     }
   }
-  callAndCheck(gl, () => gl.bindTexture(gl.TEXTURE_2D, null));
+  callAndCheck(gl2, () => gl2.bindTexture(gl2.TEXTURE_2D, null));
 }
 function createBufferFromOutputTexture(gl2, rows, columns, textureConfig) {
   const buffer2 = gl2.createBuffer();
@@ -48753,45 +48762,45 @@ function createBufferFromOutputTexture(gl2, rows, columns, textureConfig) {
   callAndCheck(gl2, () => gl2.bindBuffer(gl2.PIXEL_PACK_BUFFER, null));
   return buffer2;
 }
-function downloadFloat32MatrixFromBuffer(gl, buffer2, size) {
-  const gl2 = gl;
+function downloadFloat32MatrixFromBuffer(gl2, buffer2, size) {
+  const gl22 = gl2;
   const downloadTarget = new Float32Array(size);
-  gl2.bindBuffer(gl2.PIXEL_PACK_BUFFER, buffer2);
-  gl2.getBufferSubData(gl2.PIXEL_PACK_BUFFER, 0, downloadTarget);
-  gl2.bindBuffer(gl2.PIXEL_PACK_BUFFER, null);
+  gl22.bindBuffer(gl22.PIXEL_PACK_BUFFER, buffer2);
+  gl22.getBufferSubData(gl22.PIXEL_PACK_BUFFER, 0, downloadTarget);
+  gl22.bindBuffer(gl22.PIXEL_PACK_BUFFER, null);
   return downloadTarget;
 }
-function downloadByteEncodedFloatMatrixFromOutputTexture(gl, rows, columns, textureConfig) {
+function downloadByteEncodedFloatMatrixFromOutputTexture(gl2, rows, columns, textureConfig) {
   const [w, h] = getUnpackedMatrixTextureShapeWidthHeight(rows, columns);
   const numChannels = 4;
   const downloadTarget = new Uint8Array(getUnpackedArraySizeFromMatrixSize(rows * columns, numChannels));
-  callAndCheck(gl, () => gl.readPixels(0, 0, w, h, textureConfig.downloadTextureFormat, gl.UNSIGNED_BYTE, downloadTarget));
+  callAndCheck(gl2, () => gl2.readPixels(0, 0, w, h, textureConfig.downloadTextureFormat, gl2.UNSIGNED_BYTE, downloadTarget));
   return new Float32Array(downloadTarget.buffer);
 }
-function downloadPackedMatrixFromBuffer(gl, buffer2, batch, rows, cols, physicalRows, physicalCols, textureConfig) {
-  const gl2 = gl;
+function downloadPackedMatrixFromBuffer(gl2, buffer2, batch, rows, cols, physicalRows, physicalCols, textureConfig) {
+  const gl22 = gl2;
   const downloadTarget = new Float32Array(getPackedRGBAArraySizeFromMatrixShape(physicalRows, physicalCols));
-  gl2.bindBuffer(gl2.PIXEL_PACK_BUFFER, buffer2);
-  gl2.getBufferSubData(gl2.PIXEL_PACK_BUFFER, 0, downloadTarget);
-  gl2.bindBuffer(gl2.PIXEL_PACK_BUFFER, null);
+  gl22.bindBuffer(gl22.PIXEL_PACK_BUFFER, buffer2);
+  gl22.getBufferSubData(gl22.PIXEL_PACK_BUFFER, 0, downloadTarget);
+  gl22.bindBuffer(gl22.PIXEL_PACK_BUFFER, null);
   return downloadTarget;
 }
-function downloadMatrixFromPackedOutputTexture(gl, physicalRows, physicalCols) {
+function downloadMatrixFromPackedOutputTexture(gl2, physicalRows, physicalCols) {
   const packedRGBA = new Float32Array(physicalRows * physicalCols * 4);
-  callAndCheck(gl, () => gl.readPixels(0, 0, physicalCols, physicalRows, gl.RGBA, gl.FLOAT, packedRGBA));
+  callAndCheck(gl2, () => gl2.readPixels(0, 0, physicalCols, physicalRows, gl2.RGBA, gl2.FLOAT, packedRGBA));
   return packedRGBA;
 }
 var GPGPUContext = class {
-  constructor(gl) {
+  constructor(gl2) {
     this.outputTexture = null;
     this.program = null;
     this.disposed = false;
     this.vertexAttrsAreBound = false;
     this.itemsToPoll = [];
     const glVersion = env().getNumber("WEBGL_VERSION");
-    if (gl != null) {
-      this.gl = gl;
-      setWebGLContext(glVersion, gl);
+    if (gl2 != null) {
+      this.gl = gl2;
+      setWebGLContext(glVersion, gl2);
     } else {
       this.gl = getWebGLContext(glVersion);
     }
@@ -48841,13 +48850,13 @@ var GPGPUContext = class {
     if (this.outputTexture != null) {
       console.warn("Disposing a GPGPUContext that still has a bound output matrix texture.  This is probably a resource leak, delete the output matrix texture with GPGPUContext.deleteMatrixTexture before disposing.");
     }
-    const gl = this.gl;
-    callAndCheck(gl, () => gl.finish());
-    callAndCheck(gl, () => gl.bindFramebuffer(gl.FRAMEBUFFER, null));
-    callAndCheck(gl, () => gl.deleteFramebuffer(this.framebuffer));
-    callAndCheck(gl, () => gl.bindBuffer(gl.ARRAY_BUFFER, null));
-    callAndCheck(gl, () => gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null));
-    callAndCheck(gl, () => gl.deleteBuffer(this.indexBuffer));
+    const gl2 = this.gl;
+    callAndCheck(gl2, () => gl2.finish());
+    callAndCheck(gl2, () => gl2.bindFramebuffer(gl2.FRAMEBUFFER, null));
+    callAndCheck(gl2, () => gl2.deleteFramebuffer(this.framebuffer));
+    callAndCheck(gl2, () => gl2.bindBuffer(gl2.ARRAY_BUFFER, null));
+    callAndCheck(gl2, () => gl2.bindBuffer(gl2.ELEMENT_ARRAY_BUFFER, null));
+    callAndCheck(gl2, () => gl2.deleteBuffer(this.indexBuffer));
     this.disposed = true;
   }
   createFloat32MatrixTexture(rows, columns) {
@@ -48905,16 +48914,16 @@ var GPGPUContext = class {
     const fenceContext = this.createFence(this.gl);
     return this.pollFence(fenceContext);
   }
-  createFence(gl) {
+  createFence(gl2) {
     let query;
     let isFencePassed;
     if (env().getBool("WEBGL_FENCE_API_ENABLED")) {
-      const gl2 = gl;
-      const sync = gl2.fenceSync(gl2.SYNC_GPU_COMMANDS_COMPLETE, 0);
-      gl.flush();
+      const gl22 = gl2;
+      const sync = gl22.fenceSync(gl22.SYNC_GPU_COMMANDS_COMPLETE, 0);
+      gl2.flush();
       isFencePassed = () => {
-        const status = gl2.clientWaitSync(sync, 0, 0);
-        return status === gl2.ALREADY_SIGNALED || status === gl2.CONDITION_SATISFIED;
+        const status = gl22.clientWaitSync(sync, 0, 0);
+        return status === gl22.ALREADY_SIGNALED || status === gl22.CONDITION_SATISFIED;
       };
       query = sync;
     } else if (env().getNumber("WEBGL_DISJOINT_QUERY_TIMER_EXTENSION_VERSION") > 0) {
@@ -48931,20 +48940,20 @@ var GPGPUContext = class {
   }
   createProgram(fragmentShader) {
     this.throwIfDisposed();
-    const gl = this.gl;
+    const gl2 = this.gl;
     if (this.vertexShader == null) {
-      this.vertexShader = createVertexShader2(gl);
+      this.vertexShader = createVertexShader2(gl2);
     }
-    const program = createProgram(gl);
-    callAndCheck(gl, () => gl.attachShader(program, this.vertexShader));
-    callAndCheck(gl, () => gl.attachShader(program, fragmentShader));
-    linkProgram(gl, program);
+    const program = createProgram(gl2);
+    callAndCheck(gl2, () => gl2.attachShader(program, this.vertexShader));
+    callAndCheck(gl2, () => gl2.attachShader(program, fragmentShader));
+    linkProgram(gl2, program);
     if (this.debug) {
-      validateProgram(gl, program);
+      validateProgram(gl2, program);
     }
     if (!this.vertexAttrsAreBound) {
       this.setProgram(program);
-      this.vertexAttrsAreBound = bindVertexProgramAttributeStreams(gl, this.program, this.vertexBuffer);
+      this.vertexAttrsAreBound = bindVertexProgramAttributeStreams(gl2, this.program, this.vertexBuffer);
     }
     return program;
   }
@@ -49009,11 +49018,11 @@ var GPGPUContext = class {
   executeProgram() {
     this.throwIfDisposed();
     this.throwIfNoProgram();
-    const gl = this.gl;
+    const gl2 = this.gl;
     if (this.debug) {
       this.debugValidate();
     }
-    callAndCheck(gl, () => gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0));
+    callAndCheck(gl2, () => gl2.drawElements(gl2.TRIANGLES, 6, gl2.UNSIGNED_SHORT, 0));
   }
   blockUntilAllProgramsCompleted() {
     this.throwIfDisposed();
@@ -49141,14 +49150,14 @@ var GPGPUContext = class {
   }
   setOutputMatrixTextureDriver(outputMatrixTextureMaybePacked, width, height) {
     this.throwIfDisposed();
-    const gl = this.gl;
-    bindColorTextureToFramebuffer(gl, outputMatrixTextureMaybePacked, this.framebuffer);
+    const gl2 = this.gl;
+    bindColorTextureToFramebuffer(gl2, outputMatrixTextureMaybePacked, this.framebuffer);
     if (this.debug) {
-      validateFramebuffer(gl);
+      validateFramebuffer(gl2);
     }
     this.outputTexture = outputMatrixTextureMaybePacked;
-    callAndCheck(gl, () => gl.viewport(0, 0, width, height));
-    callAndCheck(gl, () => gl.scissor(0, 0, width, height));
+    callAndCheck(gl2, () => gl2.viewport(0, 0, width, height));
+    callAndCheck(gl2, () => gl2.scissor(0, 0, width, height));
   }
   setOutputMatrixWriteRegionDriver(x, y, width, height) {
     this.throwIfDisposed();
@@ -49511,15 +49520,15 @@ var TextureManager = class {
     this._numBytesFree = 0;
   }
 };
-function numBytesForInternalFormat(gl, internalFormat) {
-  const glany = gl;
+function numBytesForInternalFormat(gl2, internalFormat) {
+  const glany = gl2;
   if (internalFormat === glany.R32F) {
     return 4;
   } else if (internalFormat === glany.R16F) {
     return 2;
   } else if (internalFormat === glany.RGBA32F) {
     return 16;
-  } else if (internalFormat === gl.RGBA) {
+  } else if (internalFormat === gl2.RGBA) {
     return 16;
   } else if (internalFormat === glany.RGBA16F) {
     return 8;
@@ -49528,7 +49537,7 @@ function numBytesForInternalFormat(gl, internalFormat) {
   }
   throw new Error(`Unknown internal format ${internalFormat}`);
 }
-function computeBytes(shape, physicalTexType, gl, textureConfig, isPacked) {
+function computeBytes(shape, physicalTexType, gl2, textureConfig, isPacked) {
   const internalFormat = internalFormatForPhysicalTexType(physicalTexType, textureConfig);
   let numElements;
   if (isPacked) {
@@ -49538,7 +49547,7 @@ function computeBytes(shape, physicalTexType, gl, textureConfig, isPacked) {
     const [width, height] = getUnpackedMatrixTextureShapeWidthHeight(shape[0], shape[1]);
     numElements = width * height;
   }
-  const bytesPerElement2 = numBytesForInternalFormat(gl, internalFormat);
+  const bytesPerElement2 = numBytesForInternalFormat(gl2, internalFormat);
   return numElements * bytesPerElement2;
 }
 function internalFormatForPhysicalTexType(physicalTexType, textureConfig) {
@@ -49731,14 +49740,14 @@ var _MathBackendWebGL = class extends KernelBackend {
       if (gpuResource instanceof GPGPUContext) {
         newGPGPU = gpuResource;
       } else {
-        const gl = getWebGLContext(env().getNumber("WEBGL_VERSION"), gpuResource);
-        newGPGPU = new GPGPUContext(gl);
+        const gl2 = getWebGLContext(env().getNumber("WEBGL_VERSION"), gpuResource);
+        newGPGPU = new GPGPUContext(gl2);
       }
       this.binaryCache = {};
       this.gpgpuCreatedLocally = false;
     } else {
-      const gl = getWebGLContext(env().getNumber("WEBGL_VERSION"));
-      newGPGPU = new GPGPUContext(gl);
+      const gl2 = getWebGLContext(env().getNumber("WEBGL_VERSION"));
+      newGPGPU = new GPGPUContext(gl2);
       this.binaryCache = getBinaryCache(env().getNumber("WEBGL_VERSION"));
       this.gpgpuCreatedLocally = true;
     }
@@ -49890,8 +49899,8 @@ var _MathBackendWebGL = class extends KernelBackend {
       this.disposeIntermediateTensorInfo(tmpDownloadTarget);
     }
     if (buffer2 != null) {
-      const gl = this.gpgpu.gl;
-      callAndCheck(gl, () => gl.deleteBuffer(buffer2));
+      const gl2 = this.gpgpu.gl;
+      callAndCheck(gl2, () => gl2.deleteBuffer(buffer2));
     }
     const dTypeVals = this.convertAndCacheOnCPU(dataId, vals);
     const subscribers = this.pendingRead.get(dataId);
@@ -71558,6 +71567,263 @@ var log6 = (...msg) => {
   console.log(ts, ...msg);
 };
 
+// src/backend.ts
+var config = {
+  name: "customgl",
+  priority: 999,
+  canvas: null,
+  gl: null,
+  extensions: [],
+  webGLattr: {
+    alpha: false,
+    antialias: false,
+    premultipliedAlpha: false,
+    preserveDrawingBuffer: false,
+    depth: false,
+    stencil: false,
+    failIfMajorPerformanceCaveat: false,
+    desynchronized: true
+  }
+};
+async function registerWebGLbackend(canvas2) {
+  var _a;
+  config.canvas = canvas2;
+  if (findBackend(config.name))
+    return config.gl;
+  try {
+    config.gl = (_a = config.canvas) == null ? void 0 : _a.getContext("webgl2", config.webGLattr);
+    const glv2 = config.gl.getParameter(config.gl.VERSION).includes("2.0");
+    if (!glv2) {
+      log6("error: webgl 2.0 is not detected");
+      return null;
+    }
+    config.canvas.addEventListener("webglcontextlost", async (e) => {
+      log6("error:", e.type);
+      throw new Error("backend error: webgl context lost");
+    });
+    config.canvas.addEventListener("webglcontextrestored", (e) => {
+      log6("error: context restored:", e);
+    });
+    config.canvas.addEventListener("webglcontextcreationerror", (e) => {
+      log6("error: context create:", e);
+    });
+  } catch (err2) {
+    log6("error: cannot get webgl context:", err2);
+    return null;
+  }
+  try {
+    setWebGLContext(2, config.gl);
+  } catch (err2) {
+    log6("error: cannot set webgl context:", err2);
+    return null;
+  }
+  try {
+    const ctx = new GPGPUContext(config.gl);
+    registerBackend(config.name, () => new MathBackendWebGL(ctx), config.priority);
+  } catch (err2) {
+    log6("error: cannot register webgl backend:", err2);
+    return null;
+  }
+  try {
+    const kernels = getKernelsForBackend("webgl");
+    kernels.forEach((kernelConfig) => {
+      const newKernelConfig = { ...kernelConfig, backendName: config.name };
+      registerKernel(newKernelConfig);
+    });
+  } catch (err2) {
+    log6("error: cannot update WebGL backend registration:", err2);
+    return null;
+  }
+  const current = backend().getGPGPUContext ? backend().getGPGPUContext().gl : null;
+  if (current)
+    log6(`webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
+  else
+    log6("error: no current gl context:", current, config.gl);
+  ENV.set("WEBGL_VERSION", 2);
+  log6("backend registered:", config.name);
+  return config.gl;
+}
+
+// src/canvas.ts
+var gl;
+var vertexShaderSrc = `#version 300 es
+  precision highp float;
+  in vec4 position;
+  in vec4 input_tex_coord;
+  out vec2 tex_coord;
+  void main() {
+    gl_Position = position;
+    tex_coord = input_tex_coord.xy;
+  }`;
+var fragmentShaderSrc = `#version 300 es
+precision mediump float;
+uniform sampler2D mask;
+in highp vec2 tex_coord;
+out vec4 out_color;
+void main() {
+  vec2 coord = vec2(tex_coord[0], tex_coord[1]);
+  vec4 color = texture(mask, coord).rgba;
+  out_color = vec4(color.rgba);
+}`;
+var glError = (label) => {
+  const err2 = gl.getError();
+  if (err2 !== gl.NO_ERROR)
+    throw new Error(`glError: ${label} ${err2}`);
+  return err2 !== gl.NO_ERROR;
+};
+var GlTextureImpl = class {
+  constructor(texture, width, height) {
+    __publicField(this, "texture");
+    __publicField(this, "width");
+    __publicField(this, "height");
+    this.texture = texture;
+    this.width = width;
+    this.height = height;
+  }
+  bindTexture() {
+    gl.bindTexture(gl.TEXTURE_2D, this.texture);
+  }
+};
+var GlTextureFramebuffer = class extends GlTextureImpl {
+  constructor(width, height) {
+    const texture = gl.createTexture();
+    if (!texture)
+      throw new Error("createTexture: framebuffer");
+    super(texture, width, height);
+    __publicField(this, "framebuffer");
+    this.framebuffer = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+    glError("bindFramebuffer");
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.pixelStorei(gl.PACK_ALIGNMENT, 1);
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    glError("createTexture");
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+    const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    if (status !== gl.FRAMEBUFFER_COMPLETE)
+      throw new Error(`checkFramebufferStatus: ${status}`);
+    const fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+  }
+  bindFramebuffer() {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+    gl.viewport(0, 0, this.width, this.height);
+  }
+};
+var compileShader = (type, src) => {
+  const shader = gl.createShader(type);
+  if (!shader)
+    throw new Error(`compileShader: ${type}`);
+  gl.shaderSource(shader, src);
+  gl.compileShader(shader);
+  const err2 = gl.getShaderInfoLog(shader);
+  if (err2)
+    throw new Error(`compileShader: ${err2}`);
+  return shader;
+};
+var GlProgramImpl = class {
+  constructor(vertexSrc, fragmentSrc) {
+    __publicField(this, "program");
+    __publicField(this, "cachedUniformLocations");
+    const vertexShader = compileShader(gl.VERTEX_SHADER, vertexSrc);
+    glError("compileShader: vertex");
+    const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentSrc);
+    glError("compileShader: fragment");
+    this.program = gl.createProgram();
+    if (!this.program || !vertexShader || !fragmentShader)
+      throw new Error("createProgram");
+    gl.attachShader(this.program, vertexShader);
+    gl.attachShader(this.program, fragmentShader);
+    gl.bindAttribLocation(this.program, 0, "position");
+    gl.bindAttribLocation(this.program, 1, "input_tex_coord");
+    gl.linkProgram(this.program);
+    gl.useProgram(this.program);
+    glError("createProgram");
+    this.cachedUniformLocations = /* @__PURE__ */ new Map();
+  }
+  useProgram() {
+    gl.useProgram(this.program);
+  }
+  getUniformLocation(symbol) {
+    if (this.cachedUniformLocations.has(symbol))
+      return this.cachedUniformLocations.get(symbol);
+    const location = gl.getUniformLocation(this.program, symbol);
+    this.cachedUniformLocations.set(symbol, location);
+    if (!location)
+      throw new Error(`getUniformLocation: ${symbol}`);
+    return location;
+  }
+};
+var FullscreenQuad = class {
+  constructor() {
+    __publicField(this, "squareVerticesBuffer");
+    __publicField(this, "textureVerticesBuffer");
+    this.squareVerticesBuffer = gl.createBuffer();
+    if (!this.squareVerticesBuffer)
+      throw new Error("squareVerticesBuffer");
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.squareVerticesBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, Float32Array.from([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    this.textureVerticesBuffer = gl.createBuffer();
+    if (!this.textureVerticesBuffer)
+      throw new Error("textureVerticesBuffer");
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.textureVerticesBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, Float32Array.from([0, 0, 1, 0, 0, 1, 1, 1]), gl.STATIC_DRAW);
+  }
+  draw() {
+    gl.enableVertexAttribArray(0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.squareVerticesBuffer);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(1);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.textureVerticesBuffer);
+    gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+};
+var GlShaderProcessor = class {
+  constructor(shader, width, height) {
+    __publicField(this, "quad");
+    __publicField(this, "program");
+    __publicField(this, "frame");
+    this.quad = new FullscreenQuad();
+    this.program = new GlProgramImpl(vertexShaderSrc, shader);
+    this.frame = new GlTextureFramebuffer(width, height);
+  }
+  bindTextures(textures) {
+    let textureId = 0;
+    for (const [name, tex] of textures) {
+      const loc = this.program.getUniformLocation(name);
+      gl.activeTexture(gl.TEXTURE0 + textureId);
+      tex.bindTexture();
+      gl.uniform1i(loc, textureId);
+      textureId++;
+    }
+  }
+};
+var processor;
+function drawTexture(canvas2, texture) {
+  if ((gl == null ? void 0 : gl.canvas) !== canvas2) {
+    gl = canvas2.getContext("webgl2");
+    if (!gl)
+      throw new Error("getContext: webgl2");
+    processor = new GlShaderProcessor(fragmentShaderSrc, canvas2.width, canvas2.height);
+    gl.viewport(0, 0, processor.frame.width, processor.frame.height);
+    gl.scissor(0, 0, processor.frame.width, processor.frame.height);
+  }
+  const mask = new GlTextureImpl(texture, processor.frame.width, processor.frame.height);
+  processor.program.useProgram();
+  processor.bindTextures([["mask", mask]]);
+  processor.frame.bindFramebuffer();
+  processor.quad.draw();
+  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, processor.frame.framebuffer);
+  gl.blitFramebuffer(0, 0, processor.frame.width, processor.frame.height, 0, processor.frame.height, processor.frame.width, 0, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+}
+
 // src/anime.ts
 var modelUrl = "../model/whitebox.json";
 var resolution = [720, 720];
@@ -71594,56 +71860,53 @@ async function startWebCam() {
 }
 var t0 = performance.now();
 async function runInference(frame2 = 0) {
-  if (!video.paused) {
-    const t = {};
-    const t1 = performance.now();
-    t.pixels = await browser_exports.fromPixelsAsync(video, 3);
-    t.resize = image.resizeBilinear(t.pixels, resolution);
-    t.div = div(t.resize, 127.5);
-    t.sub = sub(t.div, 1);
-    t.expand = expandDims(t.sub, 0);
-    t.result = model.execute(t.expand);
-    t.squeeze = squeeze(t.result);
-    [t.red, t.green, t.blue] = split(t.squeeze, 3, 2);
-    if (!alpha)
-      alpha = ones2([...resolution, 1], "float32");
-    t.rgba = stack([t.red, t.green, t.blue, alpha], 2);
-    t.add = add2(t.rgba, 1);
-    t.mul = mul(t.add, 127.5);
-    t.cast = cast(t.mul, "int32");
-    t.clip = clipByValue(t.cast, 0, 255);
-    t.norm = squeeze(t.clip);
-    const t2 = performance.now();
-    const data = t.norm.dataSync();
-    const t3 = performance.now();
-    const arr = Uint8ClampedArray.from(data);
-    const imageData = new ImageData(arr, resolution[0], resolution[1]);
-    const ctx = canvas.getContext("2d");
-    ctx.putImageData(imageData, 0, 0);
-    for (const tensor2 of Object.keys(t))
-      dispose(t[tensor2]);
-    const t4 = performance.now();
-    if (frame2 % 10 === 0) {
-      log6("frame", {
-        frame: frame2,
-        fps: Math.round(1e4 / (t4 - t0)) / 10,
-        total: Math.round(t4 - t1),
-        inference: Math.round(t2 - t1),
-        download: Math.round(t3 - t2),
-        draw: Math.round(t4 - t3),
-        tensors: memory().numTensors,
-        bytes: memory().numBytes
-      });
-    }
-    t0 = t4;
+  if (video.paused) {
+    setTimeout(() => runInference(frame2), 50);
+    return;
   }
-  requestAnimationFrame(() => runInference(++frame2));
+  const t = {};
+  const t1 = performance.now();
+  t.pixels = await browser_exports.fromPixelsAsync(video, 3);
+  t.resize = image.resizeBilinear(t.pixels, resolution);
+  t.div = div(t.resize, 127.5);
+  t.sub = sub(t.div, 1);
+  t.expand = expandDims(t.sub, 0);
+  t.result = model.execute(t.expand);
+  t.squeeze = squeeze(t.result);
+  [t.red, t.green, t.blue] = split(t.squeeze, 3, 2);
+  if (!alpha)
+    alpha = ones2([...resolution, 1], "float32");
+  t.rgba = stack([t.red, t.green, t.blue, alpha], 2);
+  t.add = add2(t.rgba, 1);
+  t.norm = div(t.add, 2);
+  const t2 = performance.now();
+  t.data = t.norm.dataToGPU({ customTexShape: [resolution[0], resolution[1]] });
+  drawTexture(canvas, t.data.texture);
+  dispose(t.data.tensorRef);
+  const t3 = performance.now();
+  for (const tensor2 of Object.keys(t))
+    dispose(t[tensor2]);
+  const t4 = performance.now();
+  log6("frame", {
+    frame: frame2,
+    fps: Math.round(1e4 / (t4 - t0)) / 10,
+    total: Math.round(t4 - t1),
+    inference: Math.round(t2 - t1),
+    download: Math.round(t3 - t2),
+    draw: Math.round(t4 - t3),
+    tensors: memory().numTensors,
+    bytes: memory().numBytes,
+    shape: t.squeeze.shape
+  });
+  t0 = t4;
+  setTimeout(() => runInference(++frame2), 100);
 }
 async function main() {
   log6("anime");
   video = document.getElementById("video");
   canvas = document.getElementById("canvas");
-  await setBackend("webgl");
+  await registerWebGLbackend(canvas);
+  await setBackend("customgl");
   await ready();
   env().set("WEBGL_EXP_CONV", true);
   log6("tf", version, getBackend());

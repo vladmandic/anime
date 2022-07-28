@@ -27,7 +27,7 @@ const glError = (gl: WebGL2RenderingContext, label: string): boolean => {
   return err !== gl.NO_ERROR;
 };
 
-class GLTexture { // wrapper class for WebGL texture and its utility functions.
+class GLTexture { // internal class for handling gl texture
   texture: WebGLTexture;
   width: number;
   height: number;
@@ -45,7 +45,7 @@ class GLTexture { // wrapper class for WebGL texture and its utility functions.
   }
 }
 
-class GLFrameBuffer extends GLTexture { // Wrapper class for WebGL texture and its associted framebuffer and utility functions
+class GLFrameBuffer extends GLTexture { // internal class for handling gl framebuffer
   framebuffer: WebGLFramebuffer;
 
   constructor(gl: WebGL2RenderingContext, width: number, height: number) {
@@ -88,7 +88,7 @@ const compileShader = (gl: WebGL2RenderingContext, type: number, src: string): W
   return shader;
 };
 
-class GLProgram { // Wrapper class for WebGL program and its utility functions
+class GLProgram { // internal class for handling gl vertex and and fragment shader programs
   program: WebGLProgram;
   cachedUniformLocations;
   gl: WebGL2RenderingContext;
@@ -123,57 +123,38 @@ class GLProgram { // Wrapper class for WebGL program and its utility functions
     return location;
   }
 }
-
-class FullscreenQuad { // Utility class for drawing
-  squareVerticesBuffer: WebGLBuffer;
-  textureVerticesBuffer: WebGLBuffer;
-  gl: WebGL2RenderingContext;
-
-  constructor(gl: WebGL2RenderingContext) {
-    this.gl = gl;
-    this.squareVerticesBuffer = gl.createBuffer() as WebGLBuffer;
-    if (!this.squareVerticesBuffer) throw new Error('squareVerticesBuffer');
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.squareVerticesBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, Float32Array.from([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
-    this.textureVerticesBuffer = gl.createBuffer() as WebGLBuffer;
-    if (!this.textureVerticesBuffer) throw new Error('textureVerticesBuffer');
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.textureVerticesBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, Float32Array.from([0, 0, 1, 0, 0, 1, 1, 1]), gl.STATIC_DRAW);
-  }
-
-  draw(): void { // Draws a quad covering the entire bound framebuffer.
-    this.gl.enableVertexAttribArray(0); // vertex
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.squareVerticesBuffer);
-    this.gl.vertexAttribPointer(0, 2, this.gl.FLOAT, false, 0, 0);
-    this.gl.enableVertexAttribArray(1);
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureVerticesBuffer);
-    this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 0, 0);
-    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
-  }
-}
-
-class GLProcessor { // Utility class for processoring a shader
-  quad: FullscreenQuad;
+class GLProcessor { // main utility class
   program: GLProgram;
   frame: GLFrameBuffer;
   gl: WebGL2RenderingContext;
+  squareVerticesBuffer: WebGLBuffer;
+  textureVerticesBuffer: WebGLBuffer;
 
-  constructor(glContext: WebGL2RenderingContext, shaderSrc: string, canvas: HTMLCanvasElement) {
-    this.gl = glContext;
+  constructor(gl: WebGL2RenderingContext, shaderSrc: string, canvas: HTMLCanvasElement) {
+    this.gl = gl;
     this.gl.viewport(0, 0, canvas.width, canvas.height); // initial set viewport
     this.gl.scissor(0, 0, canvas.width, canvas.height); // initial set scissor
-    this.quad = new FullscreenQuad(this.gl);
     this.program = new GLProgram(this.gl, vertexShaderSrc, shaderSrc);
     this.frame = new GLFrameBuffer(this.gl, canvas.width, canvas.height); // create initial framebuffer
+
+    this.squareVerticesBuffer = this.gl.createBuffer() as WebGLBuffer;
+    if (!this.squareVerticesBuffer) throw new Error('squareVerticesBuffer');
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.squareVerticesBuffer);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, Float32Array.from([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+
+    this.textureVerticesBuffer = this.gl.createBuffer() as WebGLBuffer;
+    if (!this.textureVerticesBuffer) throw new Error('textureVerticesBuffer');
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureVerticesBuffer);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, Float32Array.from([0, 0, 1, 0, 0, 1, 1, 1]), gl.STATIC_DRAW);
   }
 
   bindTextures(textures: Array<[name: string, texure: GLTexture]>) {
     let textureId = 0;
     for (const [name, texture] of textures) {
       const loc = this.program.getUniformLocation(name);
-      this.gl.activeTexture(this.gl.TEXTURE0 + textureId); // Make the textureId unit active.
-      texture.bindTexture(); // Binds the texture to a TEXTURE_2D target.
-      this.gl.uniform1i(loc, textureId); // Binds the texture at given location to texture unit textureId.
+      this.gl.activeTexture(this.gl.TEXTURE0 + textureId); // make texture active
+      texture.bindTexture(); // bind it for future operations
+      this.gl.uniform1i(loc, textureId); // and bind a uniform
       textureId++;
     }
   }
@@ -182,6 +163,16 @@ class GLProcessor { // Utility class for processoring a shader
     this.gl.bindFramebuffer(this.gl.DRAW_FRAMEBUFFER, null); // set rendering back to default framebuffer
     this.gl.bindFramebuffer(this.gl.READ_FRAMEBUFFER, this.frame.framebuffer); // cache data from result texture drawn in the gl.READ_FRAMEBUFFER
     this.gl.blitFramebuffer(0, 0, this.frame.width, this.frame.height, 0, this.frame.height, this.frame.width, 0, this.gl.COLOR_BUFFER_BIT, this.gl.LINEAR); // transfer data from read framebuffer to default framebuffer
+  }
+
+  drawVertices(): void { // draws a quad covering the entire bound framebuffer.
+    this.gl.enableVertexAttribArray(0);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.squareVerticesBuffer);
+    this.gl.vertexAttribPointer(0, 2, this.gl.FLOAT, false, 0, 0);
+    this.gl.enableVertexAttribArray(1);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureVerticesBuffer);
+    this.gl.vertexAttribPointer(1, 2, this.gl.FLOAT, false, 0, 0);
+    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
   }
 }
 
@@ -197,6 +188,6 @@ export function drawTexture(canvas: HTMLCanvasElement, texture: WebGLTexture): v
   processor.program.useProgram(); // switch to this program if something else was using webgl
   processor.bindTextures([['mask', mask]]); // upload texture to gpu
   processor.frame.bindFramebuffer(); // bind to our framebuffer
-  processor.quad.draw(); // draw textures using quads
+  processor.drawVertices(); // draw textures using square vertices
   processor.flipFramebuffers(); // flip read framebuffer to draw framebuffer
 }

@@ -4,17 +4,20 @@ import { registerWebGLbackend } from './backend';
 import { drawTexture } from './canvas';
 
 const modelUrl = '../model/whitebox.json';
-let resolution: [number, number] = [720, 720];
 let video: HTMLVideoElement;
 let canvas: HTMLCanvasElement;
-let model: tf.GraphModel;
-let alpha: tf.Tensor;
+let resolution: [number, number] = [720, 720]; // dynamically updated based on model input signature
+let model: tf.GraphModel; // loaded tfjs graph model
+let alpha: tf.Tensor; // tensor with alpha values used to expand rgb to rgba
+const t: Record<string, tf.Tensor> = {}; // object that will hold all created tensors
 
 async function startWebCam() {
   log('starting webcam...');
   const options = { audio: false, video: { facingMode: 'user', resizeMode: 'crop', width: { ideal: resolution[0] }, height: { ideal: resolution[1] } } };
   const stream: MediaStream = await navigator.mediaDevices.getUserMedia(options);
   const ready = new Promise((resolve) => { video.onloadeddata = () => resolve(true); });
+  video.onplay = () => log('video play');
+  video.onpause = () => log('video pause');
   video.srcObject = stream;
   video.play();
   await ready;
@@ -26,13 +29,8 @@ async function startWebCam() {
   const constraints = track.getConstraints ? track.getConstraints() : '';
   log('video:', video.videoWidth, video.videoHeight, track.label, { stream, track, settings, constraints, capabilities });
   canvas.onclick = () => { // pause when clicked on screen and resume on next click
-    if (video.paused) {
-      log('play');
-      video.play();
-    } else {
-      log('pause');
-      video.pause();
-    }
+    if (video.paused) video.play();
+    else video.pause();
   };
 }
 
@@ -42,7 +40,6 @@ async function runInference(frame = 0) {
     setTimeout(() => runInference(frame), 50);
     return;
   }
-  const t: Record<string, tf.Tensor> = {};
   const t1 = performance.now();
 
   t.pixels = await tf.browser.fromPixelsAsync(video, 3); // read pixels from webcam
@@ -69,18 +66,21 @@ async function runInference(frame = 0) {
 
   const t4 = performance.now();
 
-  log('frame', {
-    frame,
-    fps: Math.round(10000 / (t4 - t0)) / 10,
-    total: Math.round(t4 - t1),
-    inference: Math.round(t2 - t1),
-    download: Math.round(t3 - t2),
-    draw: Math.round(t4 - t3),
-    tensors: tf.memory().numTensors,
-    bytes: tf.memory().numBytes,
-    shape: t.squeeze.shape,
-  });
+  if (frame % 10 === 0) { // print stats every 10 frames
+    log('frame', {
+      frame,
+      fps: Math.round(10000 / (t4 - t0)) / 10,
+      total: Math.round(t4 - t1),
+      inference: Math.round(t2 - t1),
+      download: Math.round(t3 - t2),
+      draw: Math.round(t4 - t3),
+      tensors: tf.memory().numTensors,
+      bytes: tf.memory().numBytes,
+      shape: t.norm.shape,
+    });
+  }
   t0 = t4;
+
   setTimeout(() => runInference(++frame), 100);
   // requestAnimationFrame(() => runInference(++frame));
 }
@@ -91,16 +91,14 @@ async function main() {
   canvas = document.getElementById('canvas') as HTMLCanvasElement;
   await registerWebGLbackend(canvas) as WebGL2RenderingContext;
   await tf.setBackend('customgl');
-  // await tf.setBackend('webgl');
   await tf.ready();
   tf.env().set('WEBGL_EXP_CONV', true);
-  log('tf', tf.version_core, tf.getBackend());
   model = await tf.loadGraphModel(modelUrl);
-  log('model', model);
   if (!model) return;
+  log('tf', { version: tf.version_core, backend: tf.getBackend(), model: model.modelUrl });
   if (model.inputs[0].shape) resolution = [model.inputs[0].shape[1], model.inputs[0].shape[2]];
   await startWebCam();
-  runInference();
+  await runInference();
 }
 
 window.onload = main;

@@ -71671,7 +71671,7 @@ var glError = (label) => {
     throw new Error(`glError: ${label} ${err2}`);
   return err2 !== gl.NO_ERROR;
 };
-var GlTextureImpl = class {
+var GLTexture = class {
   constructor(texture, width, height) {
     __publicField(this, "texture");
     __publicField(this, "width");
@@ -71684,7 +71684,7 @@ var GlTextureImpl = class {
     gl.bindTexture(gl.TEXTURE_2D, this.texture);
   }
 };
-var GlTextureFramebuffer = class extends GlTextureImpl {
+var GLFrameBuffer = class extends GLTexture {
   constructor(width, height) {
     const texture = gl.createTexture();
     if (!texture)
@@ -71784,21 +71784,21 @@ var FullscreenQuad = class {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 };
-var GlShaderProcessor = class {
+var GLProcessor = class {
   constructor(shader, width, height) {
     __publicField(this, "quad");
     __publicField(this, "program");
     __publicField(this, "frame");
     this.quad = new FullscreenQuad();
     this.program = new GlProgramImpl(vertexShaderSrc, shader);
-    this.frame = new GlTextureFramebuffer(width, height);
+    this.frame = new GLFrameBuffer(width, height);
   }
   bindTextures(textures) {
     let textureId = 0;
-    for (const [name, tex] of textures) {
+    for (const [name, texture] of textures) {
       const loc = this.program.getUniformLocation(name);
       gl.activeTexture(gl.TEXTURE0 + textureId);
-      tex.bindTexture();
+      texture.bindTexture();
       gl.uniform1i(loc, textureId);
       textureId++;
     }
@@ -71810,11 +71810,11 @@ function drawTexture(canvas2, texture) {
     gl = canvas2.getContext("webgl2");
     if (!gl)
       throw new Error("getContext: webgl2");
-    processor = new GlShaderProcessor(fragmentShaderSrc, canvas2.width, canvas2.height);
+    processor = new GLProcessor(fragmentShaderSrc, canvas2.width, canvas2.height);
     gl.viewport(0, 0, processor.frame.width, processor.frame.height);
     gl.scissor(0, 0, processor.frame.width, processor.frame.height);
   }
-  const mask = new GlTextureImpl(texture, processor.frame.width, processor.frame.height);
+  const mask = new GLTexture(texture, processor.frame.width, processor.frame.height);
   processor.program.useProgram();
   processor.bindTextures([["mask", mask]]);
   processor.frame.bindFramebuffer();

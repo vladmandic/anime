@@ -29,7 +29,7 @@ const glError = (label: string): boolean => {
   return err !== gl.NO_ERROR;
 };
 
-class GlTextureImpl { // wrapper class for WebGL texture and its utility functions.
+class GLTexture { // wrapper class for WebGL texture and its utility functions.
   texture: WebGLTexture;
   width: number;
   height: number;
@@ -45,7 +45,7 @@ class GlTextureImpl { // wrapper class for WebGL texture and its utility functio
   }
 }
 
-class GlTextureFramebuffer extends GlTextureImpl { // Wrapper class for WebGL texture and its associted framebuffer and utility functions
+class GLFrameBuffer extends GLTexture { // Wrapper class for WebGL texture and its associted framebuffer and utility functions
   framebuffer: WebGLFramebuffer;
 
   constructor(width: number, height: number) {
@@ -147,40 +147,40 @@ class FullscreenQuad { // Utility class for drawing
   }
 }
 
-class GlShaderProcessor { // Utility class for processoring a shader
+class GLProcessor { // Utility class for processoring a shader
   quad: FullscreenQuad;
   program: GlProgramImpl;
-  frame: GlTextureFramebuffer;
+  frame: GLFrameBuffer;
 
   constructor(shader: string, width: number, height: number) {
     this.quad = new FullscreenQuad();
     this.program = new GlProgramImpl(vertexShaderSrc, shader);
-    this.frame = new GlTextureFramebuffer(width, height); // create initial framebuffer
+    this.frame = new GLFrameBuffer(width, height); // create initial framebuffer
   }
 
-  bindTextures(textures: Array<[name: string, tex: GlTextureImpl]>) {
+  bindTextures(textures: Array<[name: string, tex: GLTexture]>) {
     let textureId = 0;
-    for (const [name, tex] of textures) {
+    for (const [name, texture] of textures) {
       const loc = this.program.getUniformLocation(name);
       gl.activeTexture(gl.TEXTURE0 + textureId); // Make the textureId unit active.
-      tex.bindTexture(); // Binds the texture to a TEXTURE_2D target.
+      texture.bindTexture(); // Binds the texture to a TEXTURE_2D target.
       gl.uniform1i(loc, textureId); // Binds the texture at given location to texture unit textureId.
       textureId++;
     }
   }
 }
 
-let processor: GlShaderProcessor;
+let processor: GLProcessor;
 
 export function drawTexture(canvas: HTMLCanvasElement, texture: WebGLTexture): void {
   if (gl?.canvas !== canvas) {
     gl = canvas.getContext('webgl2') as WebGL2RenderingContext;
     if (!gl) throw new Error('getContext: webgl2');
-    processor = new GlShaderProcessor(fragmentShaderSrc, canvas.width, canvas.height); // creates new instance of the main class
+    processor = new GLProcessor(fragmentShaderSrc, canvas.width, canvas.height); // creates new instance of the main class
     gl.viewport(0, 0, processor.frame.width, processor.frame.height); // initial set viewport
     gl.scissor(0, 0, processor.frame.width, processor.frame.height); // initial set scissor
   }
-  const mask = new GlTextureImpl(texture, processor.frame.width, processor.frame.height); // create usable texture from tensor data
+  const mask = new GLTexture(texture, processor.frame.width, processor.frame.height); // create usable texture from tensor data
   processor.program.useProgram(); // switch to this program if something else was using webgl
   processor.bindTextures([['mask', mask]]); // upload texture to gpu
   processor.frame.bindFramebuffer(); // bind to our framebuffer

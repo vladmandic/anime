@@ -167,7 +167,7 @@ class GLProcessor { // Utility class for processoring a shader
     this.frame = new GLFrameBuffer(this.gl, canvas.width, canvas.height); // create initial framebuffer
   }
 
-  bindTextures(textures: Array<[name: string, tex: GLTexture]>) {
+  bindTextures(textures: Array<[name: string, texure: GLTexture]>) {
     let textureId = 0;
     for (const [name, texture] of textures) {
       const loc = this.program.getUniformLocation(name);

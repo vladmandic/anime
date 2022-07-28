@@ -1,7 +1,7 @@
 {
   "format": "graph-model",
-  "generatedBy": "2.2.0-rc2",
-  "convertedBy": "TensorFlow.js Converter v3.18.0",
+  "generatedBy": "https://github.com/SystemErrorWang/White-box-Cartoonization",
+  "convertedBy": "https://github.com/vladmandic",
   "signature":
   {
       "inputs":

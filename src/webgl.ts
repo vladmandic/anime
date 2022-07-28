@@ -29,9 +29,7 @@ const glCreateProgram = (shaderList: Array<{ source: string, stage: number }>) =
     shaderObjs.push(shaderObj);
   }
   const prog = gl.createProgram() as WebGLProgram;
-  for (let i = 0; i < shaderObjs.length; ++i) {
-    gl.attachShader(prog, shaderObjs[i]);
-  }
+  for (let i = 0; i < shaderObjs.length; ++i) gl.attachShader(prog, shaderObjs[i]);
   gl.linkProgram(prog);
   gl.useProgram(null);
   return prog;
@@ -61,10 +59,15 @@ export async function loadTexture(url: string): Promise<WebGLTexture> {
   });
 }
 
-export async function initScene(canvas: HTMLCanvasElement) {
-  const glOptions: WebGLContextAttributes = { alpha: false, antialias: true, depth: false, desynchronized: false, failIfMajorPerformanceCaveat: false, premultipliedAlpha: true, preserveDrawingBuffer: false };
-  gl = canvas.getContext('webgl2', glOptions) as WebGL2RenderingContext;
-  gl.viewport(0, 0, canvas.width, canvas.height);
+export async function initScene(options: { canvas?: HTMLCanvasElement, context?: WebGL2RenderingContext }) {
+  if (options.canvas) { // using canvas as binding point so we create new webgl context
+    const glOptions: WebGLContextAttributes = { alpha: false, antialias: true, depth: false, desynchronized: false, failIfMajorPerformanceCaveat: false, premultipliedAlpha: true, preserveDrawingBuffer: false }; // eslint-disable-line no-undef
+    gl = options.canvas.getContext('webgl2', glOptions) as WebGL2RenderingContext;
+    gl.viewport(0, 0, options.canvas.width, options.canvas.height);
+  }
+  if (options.context) { // just use existing webgl context
+    gl = options.context;
+  }
   program = glCreateProgram([{ source: vertexShader, stage: gl.VERTEX_SHADER }, { source: fragmentShader, stage: gl.FRAGMENT_SHADER }]);
   gl.useProgram(program);
   const bufRect = gl.createBuffer();
@@ -74,6 +77,7 @@ export async function initScene(canvas: HTMLCanvasElement) {
 
 export async function drawTexture(textureObj: WebGLTexture) {
   if (!gl || !program) return;
+  gl.useProgram(program);
   const textureLoc = gl.getUniformLocation(program, 'u_texture') as WebGLUniformLocation;
   // gl.disable(gl.DEPTH_TEST);
   gl.activeTexture(gl.TEXTURE0 + 1);

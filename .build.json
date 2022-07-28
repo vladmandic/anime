@@ -36,25 +36,25 @@
     },
     "targets": [
       {
-        "name": "client-self",
+        "name": "client",
         "format": "esm",
         "platform": "browser",
-        "input": "src/anime-clientside.ts",
-        "output": "public/anime-clientside.js"
+        "input": "src/anime.ts",
+        "output": "dist/anime.js"
       },
       {
-        "name": "client-node",
+        "name": "sockets",
         "format": "esm",
         "platform": "browser",
-        "input": "src/anime-serverside.ts",
-        "output": "public/anime-serverside.js"
+        "input": "src/sockets.ts",
+        "output": "dist/sockets.js"
       },
       {
         "name": "node",
         "format": "cjs",
         "platform": "node",
         "input": "src/node.ts",
-        "output": "public/node.js",
+        "output": "dist/node.js",
         "external": ["@tensorflow", "sharp"]
       }
     ]

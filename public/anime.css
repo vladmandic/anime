@@ -4,9 +4,6 @@ body { font-size: 1rem; font-family: "CenturyGothic", "Segoe UI", sans-serif; fo
 
 .header { display: block; }
 .nav { display: block; }
-.main { display: block; width: max-content; }
+.main { display: block; width: max-content; margin: 0 auto; }
 .footer { display: block; }
 .aside { display: block; }
-
-.video { width: 720px; height: 720px }
-.canvas { width: 720px; height: 720px }

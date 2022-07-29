@@ -55,34 +55,32 @@ async function runInference(frame = 0) {
   t.rgba = tf.stack([t.red, t.green, t.blue, alpha], 2); // restack rgb to rgba
   t.add = tf.add(t.rgba, 1); // normalize output from -1..1 to 0..2
   t.norm = tf.div(t.add, 2); // normalize output from 0..2 to 0..1
-  const t2 = performance.now();
 
   t.data = t.norm.dataToGPU({ customTexShape: [resolution[0], resolution[1]] }); // get pointer to tensor texture
   drawTexture(canvas, t.data.texture); // draw tensor texture
-  tf.dispose(t.data.tensorRef); // dispose tensor texture
-  const t3 = performance.now();
+  t.reference = t.data.tensorRef; // makes texture reference tensor visible within t object so it can be auto-disposed
 
-  for (const tensor of Object.keys(t)) tf.dispose(t[tensor]);
-
-  const t4 = performance.now();
-
+  const t2 = performance.now();
   if (frame % 10 === 0) { // print stats every 10 frames
     log('frame', {
       frame,
-      fps: Math.round(10000 / (t4 - t0)) / 10,
-      total: Math.round(t4 - t1),
-      inference: Math.round(t2 - t1),
-      download: Math.round(t3 - t2),
-      draw: Math.round(t4 - t3),
+      fps: Math.round(10000 / (t2 - t0)) / 10,
+      real: Math.round(t2 - t0), // looks at time overal frame time
+      inside: Math.round(t2 - t1), // looks at time within a single callback
+      outside: Math.round(t1 - t0), // looks at time time between callbacks
       tensors: tf.memory().numTensors,
-      bytes: tf.memory().numBytes,
-      shape: t.norm.shape,
     });
   }
-  t0 = t4;
+  t0 = t2;
+  Object.values(t).forEach((tensor) => tf.dispose(tensor));
 
-  setTimeout(() => runInference(++frame), 100);
+  // see <https://github.com/tensorflow/tfjs/issues/6678>
+  // using `requestAnimationFrame` or `setTimeout` without delay causes loop to execute too fast and browser to start dropping frames
+  // using `requestVideoFrameCallback` causes browser to perform extra screen paint step and makes everything synchronized
+
   // requestAnimationFrame(() => runInference(++frame));
+  // setTimeout(() => runInference(++frame), 0);
+  video.requestVideoFrameCallback(() => runInference(++frame));
 }
 
 async function main() {

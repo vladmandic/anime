@@ -17,7 +17,7 @@ export const config = {
     depth: false,
     stencil: false,
     failIfMajorPerformanceCaveat: false,
-    desynchronized: true,
+    desynchronized: false,
   },
 };
 

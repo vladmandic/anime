@@ -71582,7 +71582,7 @@ var config = {
     depth: false,
     stencil: false,
     failIfMajorPerformanceCaveat: false,
-    desynchronized: true
+    desynchronized: false
   }
 };
 async function registerWebGLbackend(canvas2) {
@@ -71882,29 +71882,23 @@ async function runInference(frame2 = 0) {
   t.rgba = stack([t.red, t.green, t.blue, alpha], 2);
   t.add = add2(t.rgba, 1);
   t.norm = div(t.add, 2);
-  const t2 = performance.now();
   t.data = t.norm.dataToGPU({ customTexShape: [resolution[0], resolution[1]] });
   drawTexture(canvas, t.data.texture);
-  dispose(t.data.tensorRef);
-  const t3 = performance.now();
-  for (const tensor2 of Object.keys(t))
-    dispose(t[tensor2]);
-  const t4 = performance.now();
+  t.reference = t.data.tensorRef;
+  const t2 = performance.now();
   if (frame2 % 10 === 0) {
     log6("frame", {
       frame: frame2,
-      fps: Math.round(1e4 / (t4 - t0)) / 10,
-      total: Math.round(t4 - t1),
-      inference: Math.round(t2 - t1),
-      download: Math.round(t3 - t2),
-      draw: Math.round(t4 - t3),
-      tensors: memory().numTensors,
-      bytes: memory().numBytes,
-      shape: t.norm.shape
+      fps: Math.round(1e4 / (t2 - t0)) / 10,
+      real: Math.round(t2 - t0),
+      inside: Math.round(t2 - t1),
+      outside: Math.round(t1 - t0),
+      tensors: memory().numTensors
     });
   }
-  t0 = t4;
-  setTimeout(() => runInference(++frame2), 100);
+  t0 = t2;
+  Object.values(t).forEach((tensor2) => dispose(tensor2));
+  video.requestVideoFrameCallback(() => runInference(++frame2));
 }
 async function main() {
   log6("anime");

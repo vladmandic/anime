@@ -29,7 +29,7 @@
       "treeShaking": true,
       "ignoreAnnotations": true,
       "minify": false,
-    "banner": { "js": "/*\n  anime\n  homepage: <https://github.com/vladmandic/anime>\n  author: <https://github.com/vladmandic>'\n*/\n" }
+      "banner": { "js": "/*\n  anime\n  homepage: <https://github.com/vladmandic/anime>\n  author: <https://github.com/vladmandic>'\n*/\n" }
     },
     "development": {
       "minify": true

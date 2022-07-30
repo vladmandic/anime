@@ -9,7 +9,7 @@
     "development": ["serve", "watch", "lint", "compile"]
   },
   "lint": {
-    "locations": [ "*.json", "src/**/*.ts" ],
+    "locations": [ "*.json", "src/**/*.ts", "sockets/**/*.ts" ],
     "rules": { }
   },
   "serve": {
@@ -46,21 +46,21 @@
         "name": "sockets",
         "format": "esm",
         "platform": "browser",
-        "input": "src/sockets.ts",
+        "input": "sockets/anime.ts",
         "output": "dist/sockets.js"
       },
       {
         "name": "node",
         "format": "cjs",
         "platform": "node",
-        "input": "src/node.ts",
+        "input": "sockets/node.ts",
         "output": "dist/node.js",
         "external": ["@tensorflow", "sharp"]
       }
     ]
   },
   "watch": {
-    "locations": [ "src/**/*" ]
+    "locations": [ "src/**/*", "sockets/**/*" ]
   },
   "typescript": {
     "allowJs": false

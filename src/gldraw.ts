@@ -176,14 +176,28 @@ class GLProcessor { // main utility class
 
 let processor: GLProcessor; // class instance created on first use
 
-export function drawTexture(canvas: HTMLCanvasElement, texture: WebGLTexture): void { // input texture is assumed to be be in [width,height,rgba] format // if your texture is [rgb], expand it to [rgba] before calling drawTexture
+/**
+ * Draw WebGL texture onto canvas
+ * Used when image data is already uploaded to GPU to achieve fast draw without need to download data to CPU and upload to canvas
+ *
+ * @param canvas
+ * HTMLCanvasElement to draw texture on
+ * Canvas must have WebGL2 context and that context must be same shared with TFJS WebGL backend engine
+ * Suggestion is to egister a custom TFJS WebGL backend engine that uses canvas WebGL2 context as internal context
+ * see <backend.ts:registerWebGLbackend()> for example
+ *
+ * @param texture
+ * WebGLTexture texture to draw
+ * input texture is assumed to have shape [Width, Height, RGBA]
+ * if your texture is in [RGB] format, expand it to [RGBA] format before calling drawTexture
+ *
+ * @returns instance of GLProcessor
+ */
+export function drawTexture(canvas: HTMLCanvasElement, texture: WebGLTexture): GLProcessor {
   if (processor?.gl?.canvas !== canvas) {
-    // note that gl context must be same between canvas and tfjs webgl backend engine
-    // to ensure that register a custom backend engine that uses canvas gl context
-    // see backend.ts:registerWebGLbackend()
     const gl = canvas.getContext('webgl2') as WebGL2RenderingContext;
-    if (!gl) throw new Error('getContext: webgl2');
-    processor = new GLProcessor(gl); // creates new instance of the main class
+    if (!gl) throw new Error('webgl2 getContext');
+    processor = new GLProcessor(gl); // creates one instance of the main class
   }
   const mask = new GLTexture(processor.gl, texture, processor.frame.width, processor.frame.height); // create usable texture from tensor data
   processor.program.useProgram(); // switch to this program if something else was using webgl
@@ -191,4 +205,29 @@ export function drawTexture(canvas: HTMLCanvasElement, texture: WebGLTexture): v
   processor.frame.bindFramebuffer(); // bind to our framebuffer
   processor.drawVertices(); // draw textures using square vertices
   processor.flipFramebuffers(); // flip read framebuffer to draw framebuffer
+  return processor;
+}
+
+/**
+ * Wait for completion of any pending GL commands
+ * @param canvas HTMLCanvasElement for which WebGL2 context we'll wait for GL command completion
+ * @returns number how long the synchronization took in ms
+ */
+export async function syncWait(gl: WebGL2RenderingContext): Promise<number> {
+  const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+  if (!sync) return 0;
+  const ts = performance.now();
+  return new Promise((resolve) => {
+    const loop = () => {
+      const status = gl.clientWaitSync(sync, gl.SYNC_FLUSH_COMMANDS_BIT, 0);
+      if (status === gl.WAIT_FAILED) throw new Error('clientWaitSync: wait failed');
+      else if (status === gl.ALREADY_SIGNALED || status === processor.gl.CONDITION_SATISFIED) {
+        gl.deleteSync(sync);
+        resolve(performance.now() - ts);
+      } else {
+        setTimeout(loop, 0);
+      }
+    };
+    loop();
+  });
 }

@@ -12,7 +12,7 @@ Couple of different implementations of processing:
   `public/index.html` & `src/anime.ts`  
 - Using **WebSockets** to send frame data to **NodeJS** backend for processing and receiving data back  
   Processing using `@tensorflow/tfjs-node-gpu` with **CUDA** acceleration  
-  `public/sockets.html` & `src/sockets.ts` client-side  
+  `public/sockets.html` & `src/anime.ts` client-side  
   `src/node.ts` server-side  
 
 <br>

@@ -1378,10 +1378,10 @@ var require_seedrandom = __commonJS({
   "src/node_modules/seedrandom/seedrandom.js"(exports, module) {
     (function(global2, pool3, math) {
       var width = 256, chunks = 6, digits = 52, rngname = "random", startdenom = math.pow(width, chunks), significance = math.pow(2, digits), overflow = significance * 2, mask = width - 1, nodecrypto;
-      function seedrandom5(seed, options, callback) {
+      function seedrandom5(seed, options2, callback) {
         var key = [];
-        options = options == true ? { entropy: true } : options || {};
-        var shortseed = mixkey(flatten4(options.entropy ? [seed, tostring(pool3)] : seed == null ? autoseed() : seed, 3), key);
+        options2 = options2 == true ? { entropy: true } : options2 || {};
+        var shortseed = mixkey(flatten4(options2.entropy ? [seed, tostring(pool3)] : seed == null ? autoseed() : seed, 3), key);
         var arc4 = new ARC4(key);
         var prng = function() {
           var n = arc4.g(chunks), d = startdenom, x = 0;
@@ -1405,7 +1405,7 @@ var require_seedrandom = __commonJS({
         };
         prng.double = prng;
         mixkey(tostring(arc4.S), pool3);
-        return (options.pass || callback || function(prng2, seed2, is_math_call, state) {
+        return (options2.pass || callback || function(prng2, seed2, is_math_call, state) {
           if (state) {
             if (state.S) {
               copy(state, arc4);
@@ -1419,7 +1419,7 @@ var require_seedrandom = __commonJS({
             return seed2;
           } else
             return prng2;
-        })(prng, shortseed, "global" in options ? options.global : this == math, options.state);
+        })(prng, shortseed, "global" in options2 ? options2.global : this == math, options2.state);
       }
       function ARC4(key) {
         var t2, keylen = key.length, me = this, i = 0, j = me.i = me.j = 0, s = me.S = [];
@@ -2899,50 +2899,50 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
         function _emscripten_unwind_to_js_event_loop() {
           throw "unwind";
         }
-        function __webgl_enable_ANGLE_instanced_arrays(ctx) {
-          var ext = ctx.getExtension("ANGLE_instanced_arrays");
+        function __webgl_enable_ANGLE_instanced_arrays(ctx2) {
+          var ext = ctx2.getExtension("ANGLE_instanced_arrays");
           if (ext) {
-            ctx["vertexAttribDivisor"] = function(index, divisor) {
+            ctx2["vertexAttribDivisor"] = function(index, divisor) {
               ext["vertexAttribDivisorANGLE"](index, divisor);
             };
-            ctx["drawArraysInstanced"] = function(mode, first, count2, primcount) {
+            ctx2["drawArraysInstanced"] = function(mode, first, count2, primcount) {
               ext["drawArraysInstancedANGLE"](mode, first, count2, primcount);
             };
-            ctx["drawElementsInstanced"] = function(mode, count2, type, indices, primcount) {
+            ctx2["drawElementsInstanced"] = function(mode, count2, type, indices, primcount) {
               ext["drawElementsInstancedANGLE"](mode, count2, type, indices, primcount);
             };
             return 1;
           }
         }
-        function __webgl_enable_OES_vertex_array_object(ctx) {
-          var ext = ctx.getExtension("OES_vertex_array_object");
+        function __webgl_enable_OES_vertex_array_object(ctx2) {
+          var ext = ctx2.getExtension("OES_vertex_array_object");
           if (ext) {
-            ctx["createVertexArray"] = function() {
+            ctx2["createVertexArray"] = function() {
               return ext["createVertexArrayOES"]();
             };
-            ctx["deleteVertexArray"] = function(vao) {
+            ctx2["deleteVertexArray"] = function(vao) {
               ext["deleteVertexArrayOES"](vao);
             };
-            ctx["bindVertexArray"] = function(vao) {
+            ctx2["bindVertexArray"] = function(vao) {
               ext["bindVertexArrayOES"](vao);
             };
-            ctx["isVertexArray"] = function(vao) {
+            ctx2["isVertexArray"] = function(vao) {
               return ext["isVertexArrayOES"](vao);
             };
             return 1;
           }
         }
-        function __webgl_enable_WEBGL_draw_buffers(ctx) {
-          var ext = ctx.getExtension("WEBGL_draw_buffers");
+        function __webgl_enable_WEBGL_draw_buffers(ctx2) {
+          var ext = ctx2.getExtension("WEBGL_draw_buffers");
           if (ext) {
-            ctx["drawBuffers"] = function(n, bufs) {
+            ctx2["drawBuffers"] = function(n, bufs) {
               ext["drawBuffersWEBGL"](n, bufs);
             };
             return 1;
           }
         }
-        function __webgl_enable_WEBGL_multi_draw(ctx) {
-          return !!(ctx.multiDrawWebgl = ctx.getExtension("WEBGL_multi_draw"));
+        function __webgl_enable_WEBGL_multi_draw(ctx2) {
+          return !!(ctx2.multiDrawWebgl = ctx2.getExtension("WEBGL_multi_draw"));
         }
         var GL = { counter: 1, buffers: [], programs: [], framebuffers: [], renderbuffers: [], textures: [], shaders: [], vaos: [], contexts: {}, offscreenCanvases: {}, queries: [], stringCache: {}, unpackAlignment: 4, recordError: function recordError(errorCode) {
           if (!GL.lastError) {
@@ -2969,17 +2969,17 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
               return ver == "webgl" == gl instanceof WebGLRenderingContext ? gl : null;
             };
           }
-          var ctx = canvas2.getContext("webgl", webGLContextAttributes);
-          if (!ctx)
+          var ctx2 = canvas2.getContext("webgl", webGLContextAttributes);
+          if (!ctx2)
             return 0;
-          var handle = GL.registerContext(ctx, webGLContextAttributes);
+          var handle = GL.registerContext(ctx2, webGLContextAttributes);
           return handle;
-        }, registerContext: function(ctx, webGLContextAttributes) {
+        }, registerContext: function(ctx2, webGLContextAttributes) {
           var handle = _malloc(8);
           GROWABLE_HEAP_I32()[handle + 4 >> 2] = _pthread_self();
-          var context = { handle, attributes: webGLContextAttributes, version: webGLContextAttributes.majorVersion, GLctx: ctx };
-          if (ctx.canvas)
-            ctx.canvas.GLctxObject = context;
+          var context = { handle, attributes: webGLContextAttributes, version: webGLContextAttributes.majorVersion, GLctx: ctx2 };
+          if (ctx2.canvas)
+            ctx2.canvas.GLctxObject = context;
           GL.contexts[handle] = context;
           if (typeof webGLContextAttributes.enableExtensionsByDefault === "undefined" || webGLContextAttributes.enableExtensionsByDefault) {
             GL.initExtensions(context);
@@ -4811,7 +4811,7 @@ var KernelBackend = class {
   readSync(dataId) {
     return notYetImplemented("readSync");
   }
-  readToGPU(dataId, options) {
+  readToGPU(dataId, options2) {
     return notYetImplemented("readToGPU");
   }
   numDataIds() {
@@ -6345,9 +6345,9 @@ var Tensor = class {
     }
     return data;
   }
-  dataToGPU(options) {
+  dataToGPU(options2) {
     this.throwIfDisposed();
-    return trackerFn().readToGPU(this.dataId, options);
+    return trackerFn().readToGPU(this.dataId, options2);
   }
   dataSync() {
     this.throwIfDisposed();
@@ -7240,9 +7240,9 @@ var _Engine = class {
     const info = this.state.tensorInfo.get(dataId);
     return info.backend.read(dataId);
   }
-  readToGPU(dataId, options) {
+  readToGPU(dataId, options2) {
     const info = this.state.tensorInfo.get(dataId);
-    return info.backend.readToGPU(dataId, options);
+    return info.backend.readToGPU(dataId, options2);
   }
   async time(query) {
     const start = now();
@@ -9293,9 +9293,9 @@ async function toPixels(img, canvas2) {
   if (canvas2 != null) {
     canvas2.width = width;
     canvas2.height = height;
-    const ctx = canvas2.getContext("2d");
+    const ctx2 = canvas2.getContext("2d");
     const imageData = new ImageData(bytes, width, height);
-    ctx.putImageData(imageData, 0, 0);
+    ctx2.putImageData(imageData, 0, 0);
   }
   if ($img !== img) {
     $img.dispose();
@@ -37360,8 +37360,8 @@ var ResourceManager = class {
 var TFHUB_SEARCH_PARAM = "?tfjs-format=file";
 var DEFAULT_MODEL_NAME = "model.json";
 var GraphModel = class {
-  constructor(modelUrl2, loadOptions = {}, tfio = io_exports) {
-    this.modelUrl = modelUrl2;
+  constructor(modelUrl, loadOptions = {}, tfio = io_exports) {
+    this.modelUrl = modelUrl;
     this.loadOptions = loadOptions;
     this.version = "n/a";
     this.io = tfio;
@@ -37526,25 +37526,25 @@ var GraphModel = class {
     this.resourceManager.dispose();
   }
 };
-async function loadGraphModel(modelUrl2, options = {}, tfio = io_exports) {
-  if (modelUrl2 == null) {
+async function loadGraphModel(modelUrl, options2 = {}, tfio = io_exports) {
+  if (modelUrl == null) {
     throw new Error("modelUrl in loadGraphModel() cannot be null. Please provide a url or an IOHandler that loads the model");
   }
-  if (options == null) {
-    options = {};
+  if (options2 == null) {
+    options2 = {};
   }
-  if (options.fromTFHub && typeof modelUrl2 === "string") {
-    modelUrl2 = getTFHubUrl(modelUrl2);
+  if (options2.fromTFHub && typeof modelUrl === "string") {
+    modelUrl = getTFHubUrl(modelUrl);
   }
-  const model2 = new GraphModel(modelUrl2, options, tfio);
+  const model2 = new GraphModel(modelUrl, options2, tfio);
   await model2.load();
   return model2;
 }
-function getTFHubUrl(modelUrl2) {
-  if (!modelUrl2.endsWith("/")) {
-    modelUrl2 = modelUrl2 + "/";
+function getTFHubUrl(modelUrl) {
+  if (!modelUrl.endsWith("/")) {
+    modelUrl = modelUrl + "/";
   }
-  return `${modelUrl2}${DEFAULT_MODEL_NAME}${TFHUB_SEARCH_PARAM}`;
+  return `${modelUrl}${DEFAULT_MODEL_NAME}${TFHUB_SEARCH_PARAM}`;
 }
 var src_exports2 = {};
 __export(src_exports2, {
@@ -39155,13 +39155,13 @@ var Utf8IteratorImpl = class extends OneToManyIterator {
   }
 };
 var FileChunkIterator = class extends ByteChunkIterator {
-  constructor(file, options = {}) {
+  constructor(file, options2 = {}) {
     super();
     this.file = file;
-    this.options = options;
+    this.options = options2;
     util_exports.assert(file instanceof Uint8Array || (env().get("IS_BROWSER") ? file instanceof File || file instanceof Blob : false), () => "FileChunkIterator only supports File, Blob and Uint8Array right now.");
-    this.offset = options.offset || 0;
-    this.chunkSize = options.chunkSize || 1024 * 1024;
+    this.offset = options2.offset || 0;
+    this.chunkSize = options2.chunkSize || 1024 * 1024;
   }
   summary() {
     return `FileChunks ${this.file}`;
@@ -39200,7 +39200,7 @@ var FileChunkIterator = class extends ByteChunkIterator {
     return { value: await chunk, done: false };
   }
 };
-async function urlChunkIterator(url, options = {}, fetchFunc) {
+async function urlChunkIterator(url, options2 = {}, fetchFunc) {
   let urlString;
   let requestInit;
   if (typeof url === "string") {
@@ -39212,7 +39212,7 @@ async function urlChunkIterator(url, options = {}, fetchFunc) {
   const response = await (fetchFunc || util_exports.fetch)(urlString, requestInit);
   if (response.ok) {
     const uint8Array = new Uint8Array(await response.arrayBuffer());
-    return new FileChunkIterator(uint8Array, options);
+    return new FileChunkIterator(uint8Array, options2);
   } else {
     throw new Error(response.statusText);
   }
@@ -39235,10 +39235,10 @@ function isLocalPath(source) {
   return typeof source === "string" && source.slice(0, 7) === "file://";
 }
 var FileDataSource = class extends DataSource {
-  constructor(input2, options = {}) {
+  constructor(input2, options2 = {}) {
     super();
     this.input = input2;
-    this.options = options;
+    this.options = options2;
   }
   async iterator() {
     if (isLocalPath(this.input) && env().get("IS_NODE")) {
@@ -49915,7 +49915,7 @@ var _MathBackendWebGL = class extends KernelBackend {
     }
     return dTypeVals;
   }
-  readToGPU(dataId, options = {}) {
+  readToGPU(dataId, options2 = {}) {
     const texData = this.texData.get(dataId);
     const { values, shape, slice: slice6, dtype, isPacked, texture } = texData;
     if (dtype === "complex64") {
@@ -49929,7 +49929,7 @@ var _MathBackendWebGL = class extends KernelBackend {
         program = new UnaryOpProgram(shape, CLONE);
       }
       const res = this.runWebGLProgram(program, [{ dataId, shape, dtype }], dtype);
-      const gpuResouorce = this.readToGPU(res, options);
+      const gpuResouorce = this.readToGPU(res, options2);
       this.disposeIntermediateTensorInfo(res);
       return gpuResouorce;
     }
@@ -49940,7 +49940,7 @@ var _MathBackendWebGL = class extends KernelBackend {
         throw new Error("There is no data on GPU or CPU.");
       }
     }
-    const tmpTarget = this.decode(dataId, options.customTexShape);
+    const tmpTarget = this.decode(dataId, options2.customTexShape);
     const tensorRef = engine().makeTensorFromTensorInfo(tmpTarget);
     const tmpData = this.texData.get(tmpTarget.dataId);
     return { tensorRef, ...tmpData.texture };
@@ -71642,8 +71642,8 @@ async function registerWebGLbackend(canvas2) {
     return null;
   }
   try {
-    const ctx = new GPGPUContext(config.gl);
-    registerBackend(config.name, () => new MathBackendWebGL(ctx), config.priority);
+    const ctx2 = new GPGPUContext(config.gl);
+    registerBackend(config.name, () => new MathBackendWebGL(ctx2), config.priority);
   } catch (err2) {
     log6("error: cannot register webgl backend:", err2);
     return null;
@@ -71874,17 +71874,21 @@ async function syncWait(gl) {
 }
 
 // src/anime.ts
-var modelUrl = "../model/whitebox.json";
+var options = {
+  modelUrl: "../model/whitebox.json",
+  resolution: [720, 720],
+  backend: "customgl"
+};
 var video;
 var canvas;
-var resolution = [720, 720];
+var ctx;
 var model;
 var alpha;
 var t = {};
 async function startWebCam() {
   log6("starting webcam...");
-  const options = { audio: false, video: { facingMode: "user", resizeMode: "crop", width: { ideal: resolution[0] }, height: { ideal: resolution[1] } } };
-  const stream = await navigator.mediaDevices.getUserMedia(options);
+  const streamOptions = { audio: false, video: { facingMode: "user", resizeMode: "crop", width: { ideal: options.resolution[0] }, height: { ideal: options.resolution[1] } } };
+  const stream = await navigator.mediaDevices.getUserMedia(streamOptions);
   const ready2 = new Promise((resolve) => {
     video.onloadeddata = () => resolve(true);
   });
@@ -71915,7 +71919,7 @@ async function runInference(frame2 = 0) {
   }
   const t1 = performance.now();
   t.pixels = await browser_exports.fromPixelsAsync(video, 3);
-  t.resize = image.resizeBilinear(t.pixels, resolution);
+  t.resize = image.resizeBilinear(t.pixels, options.resolution);
   t.div = div(t.resize, 127.5);
   t.sub = sub(t.div, 1);
   t.expand = expandDims(t.sub, 0);
@@ -71923,17 +71927,27 @@ async function runInference(frame2 = 0) {
   t.squeeze = squeeze(t.result);
   [t.red, t.green, t.blue] = split(t.squeeze, 3, 2);
   if (!alpha)
-    alpha = ones2([...resolution, 1], "float32");
+    alpha = ones2([...options.resolution, 1], "float32");
   t.rgba = stack([t.red, t.green, t.blue, alpha], 2);
   t.add = add2(t.rgba, 1);
-  t.norm = div(t.add, 2);
-  t.data = t.norm.dataToGPU({ customTexShape: [resolution[0], resolution[1]] });
-  t.reference = t.data.tensorRef;
-  const processor2 = drawTexture(canvas, t.data.texture);
-  const sync = await syncWait(processor2.gl);
+  if (options.backend === "customgl") {
+    t.norm = div(t.add, 2);
+    t.data = t.norm.dataToGPU({ customTexShape: [options.resolution[0], options.resolution[1]] });
+    t.reference = t.data.tensorRef;
+    const processor2 = drawTexture(canvas, t.data.texture);
+    await syncWait(processor2.gl);
+  } else {
+    t.norm = mul(t.add, 127.5);
+    t.cast = cast(t.norm, "int32");
+    const data = await t.cast.data();
+    const imageData = new ImageData(Uint8ClampedArray.from(data), options.resolution[0], options.resolution[1]);
+    if (!ctx)
+      ctx = canvas.getContext("2d");
+    ctx.putImageData(imageData, 0, 0);
+  }
   const t2 = performance.now();
   if (frame2 % 10 === 0) {
-    log6("frame", { frame: frame2, fps: Math.round(1e4 / (t2 - t0)) / 10, real: Math.round(t2 - t0), sync: Math.round(sync), inside: Math.round(t2 - t1), outside: Math.round(t1 - t0), tensors: memory().numTensors });
+    log6("frame", { frame: frame2, fps: Math.round(1e4 / (t2 - t0)) / 10, real: Math.round(t2 - t0), inside: Math.round(t2 - t1), outside: Math.round(t1 - t0), tensors: memory().numTensors });
   }
   t0 = t2;
   Object.values(t).forEach((tensor2) => dispose(tensor2));
@@ -71943,16 +71957,20 @@ async function main() {
   log6("anime");
   video = document.getElementById("video");
   canvas = document.getElementById("canvas");
-  await registerWebGLbackend(canvas);
-  await setBackend("customgl");
+  if (options.backend === "customgl")
+    await registerWebGLbackend(canvas);
+  await setBackend(options.backend);
   await ready();
-  env().set("WEBGL_EXP_CONV", true);
-  model = await loadGraphModel(modelUrl);
+  if (env().flagRegistry["WEBGL_FORCE_F16_TEXTURES"])
+    env().set("WEBGL_FORCE_F16_TEXTURES", true);
+  if (env().flagRegistry["WEBGL_EXP_CONV"])
+    env().set("WEBGL_EXP_CONV", true);
+  model = await loadGraphModel(options.modelUrl);
   if (!model)
     return;
-  log6("tf", { version, backend: getBackend(), model: model.modelUrl });
+  log6("tf", { version, backend: getBackend(), model: model.modelUrl, flags: env().flags });
   if (model.inputs[0].shape)
-    resolution = [model.inputs[0].shape[1], model.inputs[0].shape[2]];
+    options.resolution = [model.inputs[0].shape[1], model.inputs[0].shape[2]];
   await startWebCam();
   await runInference();
 }

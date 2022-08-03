@@ -1,5 +1,9 @@
 /* eslint-disable max-classes-per-file */
 
+type TextureOptions = {
+  format: 'rgb' | 'rgba';
+};
+
 const glError = (gl: WebGL2RenderingContext, label: string): boolean => {
   const err = gl.getError();
   if (err !== gl.NO_ERROR) throw new Error(`glError: ${label} ${err}`);
@@ -26,13 +30,14 @@ class GLTexture { // internal class for handling gl texture
 
 class GLFrameBuffer extends GLTexture { // internal class for handling gl framebuffer
   framebuffer: WebGLFramebuffer;
+  format: string;
 
-  constructor(gl: WebGL2RenderingContext, width: number, height: number) {
+  constructor(gl: WebGL2RenderingContext, width: number, height: number, options: TextureOptions) {
     const texture = gl.createTexture();
     if (!texture) throw new Error('createTexture: framebuffer');
     super(gl, texture, width, height);
-    this.gl = gl;
     this.framebuffer = gl.createFramebuffer() as WebGLFramebuffer;
+    this.format = options.format;
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
     glError(gl, 'bindFramebuffer');
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -42,7 +47,8 @@ class GLFrameBuffer extends GLTexture { // internal class for handling gl frameb
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.pixelStorei(gl.PACK_ALIGNMENT, 1);
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    const format = this.format === 'rgba' ? gl.RGBA : gl.RGB;
+    gl.texImage2D(gl.TEXTURE_2D, 0, format, width, height, 0, format, gl.UNSIGNED_BYTE, null);
     glError(gl, 'createTexture');
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
     const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
@@ -106,6 +112,7 @@ class GLProcessor { // main utility class
   program: GLProgram;
   frame: GLFrameBuffer;
   gl: WebGL2RenderingContext;
+  options: TextureOptions;
   squareVerticesBuffer: WebGLBuffer;
   textureVerticesBuffer: WebGLBuffer;
   vertexShaderSrc = `#version 300 es
@@ -114,26 +121,33 @@ class GLProcessor { // main utility class
     in vec4 input_tex_coord;
     out vec2 tex_coord;
     void main() {
-      gl_Position = position;
-      tex_coord = input_tex_coord.xy;
+      gl_Position = position; // set pixel position
+      tex_coord = input_tex_coord.xy; // passthrough texture position
     }`;
   fragmentShaderSrc = `#version 300 es
-  precision mediump float;
-  uniform sampler2D mask;
-  in highp vec2 tex_coord;
-  out vec4 out_color;
-  void main() {
-    vec2 coord = vec2(tex_coord[0], tex_coord[1]);
-    vec4 color = texture(mask, coord).rgba;
-    out_color = vec4(color.rgba);
-  }`;
+    precision mediump float;
+    uniform int rgba;
+    uniform sampler2D mask;
+    in highp vec2 tex_coord;
+    out vec4 out_color;
+    void main() {
+      if (rgba == 1) { // rgba format
+        vec4 in_color = texture(mask, tex_coord).rgba;
+        out_color = vec4(in_color.rgba);
+      } else { // rgb format
+        vec3 in_color = texture(mask, tex_coord).rgb;
+        out_color = vec4(in_color.rgb, 1.0);    
+      }
+      if (out_color.r > 1.0) out_color = vec4(out_color.r / 255.0, out_color.g / 255.0, out_color.b / 255.0, 1.0); // silly normalization from 0..255 to 0..1
+    }`;
 
-  constructor(gl: WebGL2RenderingContext) {
+  constructor(gl: WebGL2RenderingContext, options: TextureOptions) {
     this.gl = gl;
+    this.options = options;
     this.gl.viewport(0, 0, gl.canvas.width, gl.canvas.height); // initial set viewport
     this.gl.scissor(0, 0, gl.canvas.width, gl.canvas.height); // initial set scissor
     this.program = new GLProgram(this.gl, this.vertexShaderSrc, this.fragmentShaderSrc); // create vertex and fragment shader programs
-    this.frame = new GLFrameBuffer(this.gl, gl.canvas.width, gl.canvas.height); // create initial framebuffer
+    this.frame = new GLFrameBuffer(this.gl, gl.canvas.width, gl.canvas.height, this.options); // create initial framebuffer
 
     this.squareVerticesBuffer = this.gl.createBuffer() as WebGLBuffer; // create vertices that cover entire draw area as square
     if (!this.squareVerticesBuffer) throw new Error('squareVerticesBuffer');
@@ -144,6 +158,9 @@ class GLProcessor { // main utility class
     if (!this.textureVerticesBuffer) throw new Error('textureVerticesBuffer');
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureVerticesBuffer);
     this.gl.bufferData(this.gl.ARRAY_BUFFER, Float32Array.from([0, 0, 1, 0, 0, 1, 1, 1]), gl.STATIC_DRAW);
+
+    const loc = this.program.getUniformLocation('rgba');
+    this.gl.uniform1i(loc, this.options.format === 'rgba' ? 1 : 0); // and bind a uniform
   }
 
   bindTextures(textures: Array<[name: string, texure: GLTexture]>) {
@@ -188,16 +205,21 @@ let processor: GLProcessor; // class instance created on first use
  *
  * @param texture
  * WebGLTexture texture to draw
- * input texture is assumed to have shape [Width, Height, RGBA]
- * if your texture is in [RGB] format, expand it to [RGBA] format before calling drawTexture
+ * input texture is assumed to have shape [Width, Height, RGBA|RGB]
+ * Texture can be in 0..1 or 0..255 color range
+ * Texture can be in RGBA or RGB format (see options)
  *
+ * @param options
+ * WebGL texture options
+ * format: 'rgba' assumes input texture is in [RGBA] format // working
+ * format: 'rgb'  assumes input texture is in [RGB] format // in progress
  * @returns instance of GLProcessor
  */
-export function drawTexture(canvas: HTMLCanvasElement, texture: WebGLTexture): GLProcessor {
+export function drawTexture(canvas: HTMLCanvasElement, texture: WebGLTexture, options: TextureOptions = { format: 'rgba' }): GLProcessor {
   if (processor?.gl?.canvas !== canvas) {
     const gl = canvas.getContext('webgl2') as WebGL2RenderingContext;
     if (!gl) throw new Error('webgl2 getContext');
-    processor = new GLProcessor(gl); // creates one instance of the main class
+    processor = new GLProcessor(gl, options); // creates one instance of the main class
   }
   const mask = new GLTexture(processor.gl, texture, processor.frame.width, processor.frame.height); // create usable texture from tensor data
   processor.program.useProgram(); // switch to this program if something else was using webgl

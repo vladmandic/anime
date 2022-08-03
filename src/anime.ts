@@ -66,7 +66,7 @@ async function runInference(frame = 0) {
     t.norm = tf.div(t.add, 2); // normalize output from 0..2 to 0..1
     t.data = t.norm.dataToGPU({ customTexShape: [options.resolution[0], options.resolution[1]] }); // get pointer to tensor texture
     t.reference = t.data.tensorRef; // makes texture reference tensor visible within t object so it can be auto-disposed
-    const processor = drawTexture(canvas, t.data.texture); // draw tensor texture
+    const processor = drawTexture(canvas, t.data.texture, { format: t.norm.shape[2] === 4 ? 'rgba' : 'rgb' }); // draw tensor texture
     await syncWait(processor.gl); // wait for all gl commands on a given context to complete
   } else { // download tensor data and draw to 2d canvas
     t.norm = tf.mul(t.add, 127.5);

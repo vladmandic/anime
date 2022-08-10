@@ -232,6 +232,8 @@ export function drawTexture(canvas: HTMLCanvasElement, texture: WebGLTexture, op
 
 /**
  * Wait for completion of any pending GL commands
+ * This is a standalone function  and can be used with a default WebGL backend
+ * Example: `await syncWait(tf.backend().getGPGPUContext().gl);`
  * @param canvas HTMLCanvasElement for which WebGL2 context we'll wait for GL command completion
  * @returns number how long the synchronization took in ms
  */
@@ -243,12 +245,10 @@ export async function syncWait(gl: WebGL2RenderingContext): Promise<number> {
     const loop = () => {
       const status = gl.clientWaitSync(sync, gl.SYNC_FLUSH_COMMANDS_BIT, 0);
       if (status === gl.WAIT_FAILED) throw new Error('clientWaitSync: wait failed');
-      else if (status === gl.ALREADY_SIGNALED || status === processor.gl.CONDITION_SATISFIED) {
+      else if (status === gl.ALREADY_SIGNALED || status === gl.CONDITION_SATISFIED) {
         gl.deleteSync(sync);
         resolve(performance.now() - ts);
-      } else {
-        setTimeout(loop, 0);
-      }
+      } else setTimeout(loop, 0);
     };
     loop();
   });

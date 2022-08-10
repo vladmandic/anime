@@ -71,7 +71,7 @@ async function runInference(frame = 0) {
   } else { // download tensor data and draw to 2d canvas
     t.norm = tf.mul(t.add, 127.5);
     t.cast = tf.cast(t.norm, 'int32');
-    const data = await t.cast.data();
+    const data = t.cast.dataSync();
     const imageData = new ImageData(Uint8ClampedArray.from(data), options.resolution[0], options.resolution[1]);
     if (!ctx) ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     (ctx as CanvasRenderingContext2D).putImageData(imageData, 0, 0);
@@ -97,9 +97,9 @@ async function main() {
   await tf.setBackend(options.backend);
   await tf.ready();
 
-  // if (tf.env().flagRegistry['WEBGL_USE_SHAPES_UNIFORMS']) tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
   if (tf.env().flagRegistry['WEBGL_FORCE_F16_TEXTURES']) tf.env().set('WEBGL_FORCE_F16_TEXTURES', true);
   if (tf.env().flagRegistry['WEBGL_EXP_CONV']) tf.env().set('WEBGL_EXP_CONV', true); // <https://github.com/tensorflow/tfjs/issues/6678>
+  if (tf.env().flagRegistry['USE_SETTIMEOUTCUSTOM']) tf.env().set('USE_SETTIMEOUTCUSTOM', true); // <https://github.com/tensorflow/tfjs/issues/6687>
 
   model = await tf.loadGraphModel(options.modelUrl);
   if (!model) return;

@@ -1,0 +1,1 @@
+{"version":3,"file":"gltest.d.ts","sourceRoot":"","sources":["../src/gltest.ts"],"names":[],"mappings":"AAqCA,wBAAsB,WAAW,CAAC,GAAG,EAAE,MAAM,GAAG,OAAO,CAAC,YAAY,CAAC,CAsBpE;AAED,wBAAsB,SAAS,CAAC,OAAO,EAAE;IAAE,MAAM,CAAC,EAAE,iBAAiB,CAAC;IAAC,OAAO,CAAC,EAAE,sBAAsB,CAAA;CAAE,iBAcxG;AAED,wBAAsB,WAAW,CAAC,UAAU,EAAE,YAAY,iBAczD"}

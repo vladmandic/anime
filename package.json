@@ -32,6 +32,7 @@
     "@typescript-eslint/eslint-plugin": "^5.37.0",
     "@typescript-eslint/parser": "^5.37.0",
     "@vladmandic/build": "^0.7.12",
+    "@vladmandic/tfjs": "github:vladmandic/tfjs",
     "esbuild": "^0.15.7",
     "eslint": "^8.23.1",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -46,7 +47,6 @@
   "dependencies": {
     "@tensorflow/tfjs": "^3.20.0",
     "@tensorflow/tfjs-node-gpu": "^3.20.0",
-    "@vladmandic/tfjs": "link:../tfjs",
     "sharp": "^0.31.0"
   }
 }
